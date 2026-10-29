@@ -6,7 +6,7 @@ export default function LoaderLetters({ text, className = "" }: { text: string; 
   const parts = arabic ? value.split(/(\s+)/) : Array.from(value);
   let i = 0;
   return (
-    <span className={`mtrace-label loader-letters ${className}`} aria-label={value}>
+    <span className={`mtrace-label loader-letters ${className}`} aria-label={value} dir={arabic ? "rtl" : "auto"}>
       {parts.map((p, k) =>
         /^\s+$/.test(p) ? (
           <span key={k}>{"\u00a0"}</span>
