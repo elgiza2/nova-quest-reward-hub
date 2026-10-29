@@ -1,0 +1,74 @@
+# Roadmap
+
+- [x] Quick authenticated review: agents + opens chat draft, text response works, interactive question renders and its button sends the choice; settings, integrations, pricing and usage open. Removed auth-callback re-entry and history blocking from workspace loading; 100 existing tests and 2 new regression tests passed.
+- [ ] External latency remains: specialist loading took 22–29 seconds and a widget required over 25 seconds; upstream generation/loading response time is not resolved by the workspace fix. Paid media, real payments and actual computer execution were not exercised in this quick review.
+
+- [x] Allow computer app access, remove thinking/agent elapsed times, shrink drawn send buttons, and animate the central robot in button colors. Actual components checked at desktop/mobile sizes: no timing badges, 72×34px send action with 8px corners, 10 particles, no robot shadow; 19 tests passed.
+- [ ] Authenticated live conversation check for this polish: user-managed sign-in prevents restoring a managed preview session; only actual presentation components were verified.
+
+- [x] Fix streaming delays: direct answers release after prefix validation, received text renders without artificial reveal, and provider accounting runs after bytes are delivered; 25 focused tests passed.
+- [x] Remove initial buffering for forced trivial fast turns; keep ordinary route-marker protection.
+- [x] Restore readable thinking shimmer and expand live progress steps with elapsed time.
+- [x] Strengthen interactive drawing/card/button instructions; verify renderer action callback.
+- [x] Verified live answers with the test account: text starts in ~3s, glass widgets render.
+
+- [x] Redesign Tasks with Orange point icon and five character images; restrict active tasks to the five requested types.
+- [x] Remove main Agents +; remove Earn tasks and rename Earn to Referral with Telegram-only invite links.
+- [x] Inline manual TON/USDT-TON checkout; strict reference matching and atomic settlement with transaction reuse prevention.
+- [x] Synchronize returning Telegram profile photos and fullscreen/safe-area events; native Back navigation.
+- [x] Remove visible old sharing/help branding; restore readable shimmering thinking text.
+- [x] 13 targeted tests passed; public Tasks and inline Crypto navigation checked on mobile without runtime errors.
+- [ ] Real transfer and authenticated read-back: unavailable without a real payment/session; other networks are disabled pending reliable verification.
+- [ ] X follow and ORANGE purchase rewards: require X account verification and cryptographic wallet ownership proof; opening links never grants points.
+- [ ] Verify fullscreen, native Back and profile image inside an actual Telegram client.
+- [x] Chat drawings: gold/violet/blue/yellow tiles with the button glow and rising dots, comparisons drawn as tiles and bars instead of markdown tables; verified live with the test account.
+
+- [x] Rename Megsy/Nova AI → Orange AI (UI + translations + support links @Torekr)
+- [x] Telegram login (Mini App initData → session) + /api/public/telegram-auth
+- [x] Reward tasks migration (telegram_join, daily_checkin; old Trustpilot/X tasks deactivated)
+- [x] /tasks page — server-verified completion, credits awarded by /api/tasks/complete
+- [x] Telegram button on the sign-in page
+- [x] Crypto wallet addresses saved as secrets (TON / ETH / BSC / SOL / TRON)
+- [x] crypto_payments migration
+- [x] /api/crypto/invoice — invoice creation + on-chain verification + fulfilment
+- [x] Legacy crypto page now uses the manual panel; current checkout keeps crypto inline.
+- [x] Bot /start auto-link: webhook route deployed and registered (verified via getWebhookInfo)
+- [x] New bot token: TELEGRAM_BOT_TOKEN secret replaced
+- [x] Bot admin panel /101 — user count + add/edit/delete tasks (name, link, image)
+- [x] Bot /start welcome image + two daily channel posts (English, bold captions, Open Orange AI button) + admin "post now" button
+- [x] Orange AI logo + favicon/icons applied from the uploaded circular logo
+- [x] reward_tasks image_url column + tasks UI shows task image
+- [ ] Additional payment networks require transaction-specific secure verification; wallet-connect is no longer requested.
+- [ ] Publish (Vercel token exposed in chat — do not use; publish via Lovable instead)
+
+- [x] Start message rewrite (bold, characters, community + buy ORANGE buttons), daily user notifications, Telegram-only login, full-screen Mini App with top safe area
+- [ ] Confirm /start and daily notification in real Telegram
+- [x] Short start message + characters image, fixed broken images on Vercel, tasks (channel/X/ORANGE) with verification, Telegram Back button, crypto replaces Google Pay
+- [ ] Bot must be admin in @oraien for channel-join verification
+- [x] Tasks entry in app menu, real full screen, Telegram back button, crypto page Buffer crash, start image characters together, combined crypto icon
+- [x] Tasks page: compact rows (image, name, Go button)
+- [x] Telegram profile photo not showing
+- [x] Chat thinking text not showing
+- [x] Remove two extra buttons next to copy/like/dislike in chat
+- [ ] Real TON/USDT wallet payment test (needs user's wallet)
+- [x] New tasks added via bot appear in the app tasks page (allowlist removed, image_url used)
+- [x] Regenerated 5 task images sized for small circular rows
+- [x] Welcome post published to channel (msg 375, button opens Mini App via t.me/Noveaibot?startapp)
+- [x] Channel post button opens Mini App
+- [x] Deleted 10 oldest Vercel projects (all 204)
+- [x] Vercel account blocked (fair use) — published on Lovable instead: https://nova-quest-rewards-hub.lovable.app
+- [x] Updated all links (manifest, bot, TON payment, slides) to the Lovable URL
+- [x] Webhook + menu button re-registered with secret token; /start verified (200 ok)
+- [x] Telegram sign-in race fix shipped in this publish
+- [x] One-off channel post scheduled for 2026-10-24 02:00 UTC (fires on next bot traffic)
+- [x] Replace OpenUI chat visuals (glass widget only, OpenUI Inspect panel blocked)
+- [x] Fast replies: skip out-of-credit text provider, use quick backup for simple chat (~1s)
+- [x] Visual answers: model instructed to draw with built-in widget styling instead of OpenUI
+- [ ] Images/video/files/code/computer in chat: blocked — Cerebras and abliteration accounts are out of credit (402/insufficient_credits), so the tool-capable agent cannot run
+- [x] Remove chat suggestions (follow-up suggestion buttons banned in prompt)
+- [x] Remove all icons and every shadow from chat drawings, and make the user message pink.
+- [x] New icon-free, shadow-free design for the thinking steps and agent steps shown while working.
+- [x] When the AI needs information from the user, it must draw the question itself (choice buttons, text box, or any other input type) with its own question label.
+
+- [x] Telegram bot adds keys for the 4 allowed providers only (agentsky, browser-use, cerebras, deapi)
+- [x] Remove other AI providers from main paths (leftover names in model lists/admin page still to clean)
