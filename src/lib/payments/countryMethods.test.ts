@@ -25,3 +25,15 @@ describe("payment methods per country (Dodo Payments table)", () => {
     for (const c of ["IN", "EG", "US", "DE", null]) expect(ids(c)).not.toContain("more");
   });
 });
+
+describe("Klarna follows Dodo's US-only, above-$50 rule", () => {
+  it("is not offered in Europe", () => {
+    expect(localMethodsFor("DE", 120).map((m) => m.id)).not.toContain("klarna");
+  });
+  it("is not offered for the $7 month in the US", () => {
+    expect(localMethodsFor("US", 7).map((m) => m.id)).not.toContain("klarna");
+  });
+  it("is offered for the $120 year in the US", () => {
+    expect(localMethodsFor("US", 120).map((m) => m.id)).toContain("klarna");
+  });
+});
