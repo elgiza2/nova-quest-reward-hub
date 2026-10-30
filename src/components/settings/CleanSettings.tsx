@@ -25,7 +25,7 @@ export function CleanCard({
   return (
     <section
       className={cn(
-        "rounded-lg border border-border bg-card text-card-foreground",
+        "rounded-2xl border border-foreground/10 bg-foreground/[0.05] backdrop-blur-xl text-foreground shadow-[0_20px_60px_-30px_rgba(0,0,0,0.7)]",
         className,
       )}
     >
