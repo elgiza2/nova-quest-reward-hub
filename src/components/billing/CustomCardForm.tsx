@@ -3,7 +3,8 @@ import { ArrowLeft, Check, Loader2, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BrandMark } from "./CardPreview";
 import { BrandIcon } from "./PaymentMethodMark";
-import artCoat from "@/assets/orange-coat.png.asset.json";
+import artCoatUrl from "@/assets/pricing-coat.webp";
+const artCoat = { url: artCoatUrl };
 
 import {
   applePaySupported,
@@ -16,6 +17,8 @@ import {
   type KashierOrder,
 } from "@/lib/payments/kashier";
 import { startDodoCheckout } from "@/lib/payments/dodo";
+import { supabase } from "@/integrations/supabase/client";
+import CheckoutSheet, { brandOf, lastFour, type SheetMethod } from "./CheckoutSheet";
 import type { PlanTier } from "@/data/pricingData";
 
 type Props = { open: boolean; tier: PlanTier; interval: "monthly" | "yearly"; onClose: () => void };
@@ -45,6 +48,57 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   const [startingMethod, setStartingMethod] = useState<string | null>(null);
   const [methodNote, setMethodNote] = useState<string | null>(null);
   const stopWatchRef = useRef<(() => void) | null>(null);
+  const [sheet, setSheet] = useState(true);
+  const [picked, setPicked] = useState<SheetMethod>({ kind: "new_card" });
+  const [saved, setSaved] = useState<Array<Extract<SheetMethod, { kind: "saved" }>>>([]);
+  const [egypt, setEgypt] = useState(false);
+
+  // Vodafone Cash is offered to visitors in Egypt only.
+  useEffect(() => {
+    if (!open) return;
+    let alive = true;
+    fetch("/api/public/geo")
+      .then((r) => r.json())
+      .then((j: { country?: string | null }) => {
+        if (!alive) return;
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        setEgypt(j.country ? j.country === "EG" : tz === "Africa/Cairo");
+      })
+      .catch(() => alive && setEgypt(Intl.DateTimeFormat().resolvedOptions().timeZone === "Africa/Cairo"));
+    return () => {
+      alive = false;
+    };
+  }, [open]);
+
+  // Saved cards: only the masked number kept from the payment provider.
+  useEffect(() => {
+    if (!open) return;
+    let alive = true;
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) return;
+      const { data } = await supabase
+        .from("subscriptions")
+        .select("id, card_masked")
+        .eq("user_id", auth.user.id)
+        .not("card_masked", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(3);
+      if (!alive || !data) return;
+      const seen = new Set<string>();
+      const cards = data.flatMap((row) => {
+        const l4 = lastFour(row.card_masked);
+        if (!l4 || seen.has(l4)) return [];
+        seen.add(l4);
+        return [{ kind: "saved" as const, id: row.id, brand: brandOf(row.card_masked), last4: l4 }];
+      });
+      setSaved(cards);
+      if (cards[0]) setPicked(cards[0]);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [open]);
 
   // Apple Pay exists only on Apple devices with a card in Wallet.
   useEffect(() => {
@@ -82,6 +136,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       setWalletWaiting(false);
       setStartingMethod(null);
       setMethodNote(null);
+      setSheet(true);
     }
     if (!open) {
       stopWatchRef.current?.();
@@ -159,6 +214,9 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
     if (stage !== "main" && !threeDsUrl && result !== "success") {
       setStage("main");
       setError(null);
+    } else if (!threeDsUrl && result !== "success") {
+      setError(null);
+      setSheet(true);
     } else onClose();
   };
 
@@ -188,6 +246,78 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   };
 
   const view = threeDsUrl ? "verify" : result === "success" ? "done" : stage;
+
+  if (sheet && view === "main") {
+    const buy = () => {
+      setError(null);
+      if (picked.kind === "vodafone") {
+        if (phone.length < 10) {
+          setError("Enter your Vodafone Cash number.");
+          return;
+        }
+        void submitWallet({ preventDefault() {} } as React.FormEvent);
+        return;
+      }
+      // New card or a saved card: the secure card form (saved cards renew automatically;
+      // a new purchase still needs the card confirmed with the bank).
+      setMethod("visa");
+      setSheet(false);
+    };
+    return (
+      <CheckoutSheet
+        tier={tier}
+        interval={interval}
+        savedCards={saved}
+        showVodafone={egypt}
+        showApplePay={applePay}
+        selected={picked}
+        onSelect={(m) => {
+          setError(null);
+          setPicked(m);
+        }}
+        onBuy={buy}
+        onClose={walletWaiting ? cancelWallet : onClose}
+        busy={busy}
+        note={error}
+      >
+        {picked.kind === "vodafone" &&
+          (walletWaiting ? (
+            <div className="mb-4 flex items-center gap-3 rounded-xl bg-muted/50 p-3 text-[13.5px]">
+              <Loader2 className="h-5 w-5 shrink-0 animate-spin" />
+              <span>
+                Approve the request on <span dir="ltr">+20 {phone}</span> (Ana Vodafone or *9#).
+              </span>
+            </div>
+          ) : (
+            <label className="mb-4 flex h-12 items-center gap-2 rounded-xl border border-border px-3">
+              <span className="text-muted-foreground" dir="ltr">+20</span>
+              <input
+                inputMode="tel"
+                dir="ltr"
+                aria-label="Vodafone Cash wallet number"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))}
+                placeholder="10 0000 0000"
+                className="h-full flex-1 bg-transparent text-[15px] outline-none"
+              />
+            </label>
+          ))}
+        {picked.kind === "apple_pay" && (
+          <div className="mb-3">
+            <ApplePayPanel
+              tier={tier}
+              interval={interval}
+              onPaid={(id) => {
+                setOrderId(id);
+                setResult("success");
+                setSheet(false);
+              }}
+            />
+          </div>
+        )}
+      </CheckoutSheet>
+    );
+  }
 
   return (
     <section
@@ -247,7 +377,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
             </div>
           ) : (
             <div className="checkout-allinone">
-              <div className="checkout-methods" role="tablist" aria-label="Payment method">
+              <div className="checkout-methods" role="tablist" aria-label="Payment method" hidden>
                 {METHODS.filter((m) => m.id !== "apple_pay" || applePay).map((m) => (
                   <Button
                     variant="ghost"

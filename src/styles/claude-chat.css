@@ -794,3 +794,21 @@ html[data-theme="dark"] [data-skin="claude"] [data-plus-trigger]:hover {
   }
 }
 
+
+/* Calm pink drifting glow behind the chat (same motion as drawn tiles); the
+   top bar has no background or edge so messages pass beneath it. */
+@keyframes megsy-chat-pink {
+  0%, 100% { background-position: 0% 0%, 100% 100%, 50% 50%; }
+  50% { background-position: 30% 20%, 70% 80%, 50% 50%; }
+}
+html body .chat-surface-dark[data-chat-main="true"],
+html body [data-shell] .chat-surface-dark[data-chat-main="true"] {
+  background:
+    radial-gradient(60% 45% at 15% 0%, color-mix(in oklch, oklch(0.86 0.09 350) 38%, transparent), transparent 70%),
+    radial-gradient(55% 40% at 90% 100%, color-mix(in oklch, oklch(0.88 0.07 330) 32%, transparent), transparent 70%),
+    hsl(var(--background)) !important;
+  background-size: 140% 140%, 140% 140%, 100% 100% !important;
+  animation: megsy-chat-pink 18s ease-in-out infinite;
+}
+html body .mobile-chat-header { background: transparent !important; border: 0 !important; box-shadow: none !important; backdrop-filter: none !important; }
+@media (prefers-reduced-motion: reduce) { html body .chat-surface-dark[data-chat-main="true"] { animation: none; } }

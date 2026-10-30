@@ -1,6 +1,5 @@
 import { forwardRef, lazy, Suspense, type ReactNode, type RefObject } from "react";
 import { MobileChatLandingMount } from "./MobileChatLandingMount";
-import { ScrollToBottomButton } from "./ScrollToBottomButton";
 import type { Message, ChatMode } from "../chatConstants";
 
 /**
@@ -152,11 +151,6 @@ export const ChatMessagesArea = forwardRef<HTMLDivElement, ChatMessagesAreaProps
           </div>
         )}
 
-        <ScrollToBottomButton
-          visible={(showScrollBtn || newMessagesCount > 0) && messages.length > 0}
-          newMessagesCount={newMessagesCount}
-          onClick={scrollToBottom}
-        />
       </div>
     );
   },
