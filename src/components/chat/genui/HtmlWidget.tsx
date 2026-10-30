@@ -204,7 +204,30 @@ a.go{display:inline-flex;margin-top:8px;padding:6px 14px;border-radius:8px;font-
 /* Compact rectangular submit actions; retain the gloss and floating points. */
 .row:has(>button),.actions,.btns{display:flex!important;flex-wrap:wrap;gap:8px!important;align-items:center;margin-top:12px}.chips,.row:has(>.chip){display:flex!important;flex-wrap:wrap;gap:6px!important;margin:8px 0}.chip{min-height:32px;padding:6px 12px;border-radius:999px;font-size:13px;line-height:1.2;flex:0 0 auto}button.ok,button.no,button:not(.chip):not(.primary){min-height:34px;padding:6px 14px;border-radius:8px;font-size:13px;width:auto!important;flex:0 0 auto}button+button{margin:0}input,textarea,select{width:100%;box-sizing:border-box;margin:6px 0}form>button,.mail button,.card>button:last-child{margin-top:10px}button.primary{--round:8px;width:auto!important;max-width:100%;min-width:72px;min-height:34px;padding:6px 14px;flex:0 0 auto;font-size:13px}
 button.primary .inner{font-size:13px;line-height:1.5}
-button.primary .fold{width:.8rem;height:.8rem}
+button.primary .fold{display:none!important}
+/* Photos keep their own shape instead of a small cropped box. */
+img:not(.fav):not(.yt img):not(.ba img):not(.connect img){height:auto;object-fit:contain}
+.hero{height:auto!important;overflow:visible}.hero img{height:auto!important;max-height:none;object-fit:contain;border-radius:var(--rs)}.hero::after{display:none}.hero>div{position:static!important;color:var(--fg)!important;margin-top:10px}.hero h2,.hero h3{color:var(--fg)!important}.hero p{color:var(--muted)!important}
+/* Question card: title on top, clean options below. */
+.quiz{padding:18px;border-radius:20px;background:var(--soft);border:1px solid var(--line)}
+.quiz .q h3{font-size:16px;font-weight:700;line-height:1.5;margin:2px 0 14px}
+.quiz .opts{gap:8px}
+.quiz .opts .chip{background:var(--bg,#fff)!important;border:1px solid var(--line)!important;box-shadow:none!important;color:var(--fg)!important;font-weight:500;border-radius:14px;justify-content:flex-start;transition:border-color .2s,transform .15s}
+.quiz .opts .chip:hover{border-color:var(--accent)!important}.quiz .opts .chip:active{transform:scale(.98)}
+.quiz .opts .chip .points_wrapper{display:none}
+/* Steps: same tile look as the other drawings, connected by a line. */
+.steps{gap:0;position:relative}
+.step{background:var(--soft);border:1px solid var(--line);border-radius:18px;margin-bottom:10px;padding-top:14px;padding-bottom:14px}
+.step::before{top:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 12px -4px var(--accent)}
+.step:not(:last-child)::after{content:"";position:absolute;inset-inline-start:28px;top:46px;bottom:-12px;width:2px;background:var(--line)}
+.step b{font-size:15px;font-weight:700}.step a{display:inline-flex;margin-top:8px;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--bg,#fff);border:1px solid var(--line);text-decoration:none;color:var(--fg)}
+/* Strategy tree: clean connected cards. */
+.tree{gap:12px;width:100%}
+.tree>.node,.tree>li>.node{font-size:15px;padding:12px 16px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.tree ul{border-inline-start:2px solid var(--line);margin-inline-start:18px;padding-inline-start:18px;gap:10px}
+.tree li::before{background:var(--line);inset-inline-start:-18px;width:16px;top:20px}
+.tree .node{background:var(--bg,#fff);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:600;min-width:140px}
+.tree li:has(>ul)>.node::after{content:"▾";margin-inline-start:8px;opacity:.5;font-size:11px}.tree li.shut>.node::after{content:"▸"}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 `;
 
