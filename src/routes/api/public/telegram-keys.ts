@@ -152,12 +152,19 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
           return new Response("Unauthorized", { status: 401 });
 
         const update = await request.json().catch(() => null);
-        const telegramCall = (method: string, body: unknown) =>
-          fetch(gatewayKey ? `https://connector-gateway.lovable.dev/telegram/${method}` : `https://api.telegram.org/bot${token}/${method}`, {
+        const telegramCall = async (method: string, body: unknown) => {
+          const response = await fetch(gatewayKey ? `https://connector-gateway.lovable.dev/telegram/${method}` : `https://api.telegram.org/bot${token}/${method}`, {
             method: "POST",
             headers: { "Content-Type": "application/json", ...(gatewayKey ? { Authorization: `Bearer ${gatewayAuth}`, "X-Connection-Api-Key": gatewayKey } : {}) },
             body: JSON.stringify(body),
           });
+          const result = await response.json().catch(() => null);
+          if (!response.ok || result?.ok !== true) {
+            // Never include provider text: it may echo request credentials.
+            throw new Error(`Telegram ${method} failed (${response.status})`);
+          }
+          return result;
+        };
         const send = (chatId: number, text: string, replyMarkup?: unknown) =>
           telegramCall("sendMessage", {
               chat_id: chatId, text, parse_mode: "HTML",
