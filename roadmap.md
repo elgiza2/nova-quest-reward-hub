@@ -1,10 +1,12 @@
 # Roadmap
 
 ## Current request — pricing and settings
+- [x] Remove secondary dollar amounts whenever pricing and checkout show a local currency; Egypt and India pricing verified in the signed-in mobile browser.
+- [x] Review actual signed-in settings home and subpages on mobile and correct the monochrome presentation: remove colored preview buttons and danger actions, repair nested search/name fields and expired-avatar fallback, preserve light/dark selection. No account data or payments changed; 16 payment tests passed.
 - [x] Make the pricing Subscribe button black; confirmed in the actual pricing page, with working yearly selection.
 - [x] Reviewed product capabilities and revised pricing summary and benefits; corrected the payment FAQ to reflect country-specific methods without gateway branding.
 - [x] Replace glass across settings routes with opaque monochrome tokens and a settings-only final style layer; checked light/dark presentation at mobile and desktop sizes, no runtime errors, 16 payment tests passed and build OK.
-- [ ] Account-specific settings end-to-end review: external unmanaged authentication redirects to sign-in; only presentation was verified, not logged-in account controls.
+- [x] Account-specific settings review: signed in with the supplied test account and checked home, profile, privacy, memory, language, security, cloud browser, skills, email/password and two-factor pages on mobile without runtime errors or horizontal overflow.
 
 ## Current visual correction
 - [x] Restore multicolored particle styling across question options, steps and strategy-tree nodes.

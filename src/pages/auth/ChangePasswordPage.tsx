@@ -109,12 +109,12 @@ const ChangePasswordPage = () => {
                       />
                     ))}
                   </div>
-                  <p style={{ marginTop: 8, fontSize: 12, color: "rgba(235,220,205,0.6)", fontWeight: 500 }}>
+                  <p className="mt-2 text-xs text-muted-foreground">
                     {strengthLabels[strength]}
                   </p>
                 </div>
               )}
-              <p style={{ fontSize: 12, color: "rgba(235,220,205,0.5)", lineHeight: 1.5 }}>
+              <p className="text-xs leading-relaxed text-muted-foreground">
                 Use at least 8 characters. Longer is stronger.
               </p>
             </div>
