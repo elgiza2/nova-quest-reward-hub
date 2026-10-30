@@ -2579,13 +2579,40 @@ const ChatPage = () => {
     if (fastshotCard || !r || r.top <= 0 || r.height === 0) {
       r = fastshotCard?.getBoundingClientRect() ?? r;
     }
+    if (isMobileViewport && plusView === "main") {
+      // Floating card over a dimmed page: three square tiles, no grip/title.
+      return createPortal(
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="fixed inset-0 z-[59] md:hidden"
+            style={{ background: "hsl(0 0% 0% / 0.45)" }}
+            onClick={() => setPlusMenuOpen(false)}
+          />
+          <motion.div
+            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 24, scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 520, damping: 40 }}
+            data-plus-menu
+            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-x-4 z-[60] rounded-[34px] bg-background p-4 md:hidden"
+            style={{ boxShadow: "none", border: 0, borderRadius: 34, bottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)" }}
+          >
+            {renderPlusContent()}
+          </motion.div>
+        </>,
+        document.body,
+      );
+    }
     if (isMobileViewport) {
       const vh = window.innerHeight;
-      // Open the tools panel as a proper full-height drawer. The previous
-      // compact snap point hid the photo/file cards behind the composer and
-      // made the menu look broken on short screens.
-      const expandedH = Math.min(plusView === "main" ? 150 : 340, vh - 24);
+      const expandedH = Math.min(340, vh - 24);
       const collapsedY = 0;
+
 
       return createPortal(
         <Suspense fallback={null}>

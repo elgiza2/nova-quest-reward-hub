@@ -103,7 +103,9 @@ async function validateBrowserUseKey(key: string): Promise<boolean> {
 
 async function validateDeapiKey(key: string): Promise<boolean> {
   try {
-    const res = await fetch("https://api.deapi.ai/api/v1/client/balance", {
+    // Generation-only keys may lack the balance permission (403), so check the
+    // model list, which every working key can read.
+    const res = await fetch("https://api.deapi.ai/api/v1/client/models?per_page=1", {
       headers: { Authorization: `Bearer ${key}`, Accept: "application/json" },
     });
     return res.ok;

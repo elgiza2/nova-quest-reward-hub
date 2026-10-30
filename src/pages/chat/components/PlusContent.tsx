@@ -139,16 +139,17 @@ const PlusMain = (p: PlusContentProps) => {
 
   return (
     <motion.div key="main" {...fadeProps(-8)} className="flex flex-col">
-      <div dir={isArabic ? "rtl" : "ltr"} className="grid grid-cols-3 gap-3 p-2" style={{ fontFamily: mobileFont }}>
+      <div dir={isArabic ? "rtl" : "ltr"} className="grid grid-cols-3 gap-3 p-2 md:p-1" style={{ fontFamily: mobileFont }}>
         {tiles.map((t) => (
           <button
             key={t.id}
             data-no-neo
             type="button"
             onClick={t.onClick}
-            className="flex h-[100px] flex-col items-center justify-center gap-2.5 rounded-[22px] bg-muted/50 text-foreground transition-[background-color,transform] duration-150 hover:bg-muted active:scale-[0.96]"
+            style={{ border: 0, borderRadius: 24 }}
+            className="flex aspect-[1.12] flex-col items-center justify-center gap-2 rounded-[24px] border-0 bg-muted/60 text-foreground shadow-none transition-[background-color,transform] duration-150 hover:bg-muted active:scale-[0.96]"
           >
-            <t.Icon className="h-6 w-6" strokeWidth={1.7} />
+            <t.Icon className="h-[22px] w-[22px]" strokeWidth={1.6} />
             <span className="truncate px-1 text-[14px] font-normal">{t.label}</span>
           </button>
         ))}
