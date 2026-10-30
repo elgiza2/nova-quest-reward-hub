@@ -194,6 +194,7 @@ html body [data-settings-surface] .mem-content { font-weight: 400 !important; }
 @media (prefers-reduced-motion: reduce) { html body [data-settings-surface] [role="switch"], html body [data-settings-surface] [role="switch"] > span { transition: none !important; } }
 /* Existing home styles use important declarations in this layer; override there too. */
 @layer properties {
+  html body [data-settings-surface] [role="switch"] > span { translate: none !important; }
   html body [data-settings-surface] .ms-root .ms-card {
     background: transparent !important; border: 0 !important; border-radius: 0 !important;
   }
