@@ -1,5 +1,9 @@
 # Roadmap
 
+## Telegram key bot repair
+- [ ] Repair gateway transport, stateless provider selection and provider commands; include Plus AI storage without claiming validation or activation.
+- [ ] Register the current project's webhook and verify authorized bot handling; external Plus AI consumption remains unavailable until its presentation implementation exists.
+
 ## Current request — pricing and settings
 - [x] Cancel the latest settings redesign and restore the original settings appearance before monochrome changes; pricing and checkout remain unchanged.
 - [x] Remove secondary dollar amounts whenever pricing and checkout show a local currency; Egypt and India pricing verified in the signed-in mobile browser.
