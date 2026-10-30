@@ -257,6 +257,11 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
         void submitWallet({ preventDefault() {} } as React.FormEvent);
         return;
       }
+      if (picked.kind === "global") {
+        const names = { apple_pay: "Apple Pay", google_pay: "Google Pay", more: "This method" } as const;
+        void startRedirect(picked.id === "more" ? null : picked.id, names[picked.id]);
+        return;
+      }
       // New card or a saved card: the secure card form (saved cards renew automatically;
       // a new purchase still needs the card confirmed with the bank).
       setMethod("visa");
@@ -272,12 +277,13 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
         selected={picked}
         onSelect={(m) => {
           setError(null);
+          setMethodNote(null);
           setPicked(m);
         }}
         onBuy={buy}
         onClose={walletWaiting ? cancelWallet : onClose}
-        busy={busy}
-        note={error}
+        busy={busy || !!startingMethod}
+        note={error ?? methodNote}
       >
         {picked.kind === "vodafone" &&
           (walletWaiting ? (
@@ -301,19 +307,6 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
               />
             </label>
           ))}
-        {picked.kind === "apple_pay" && (
-          <div className="mb-3">
-            <ApplePayPanel
-              tier={tier}
-              interval={interval}
-              onPaid={(id) => {
-                setOrderId(id);
-                setResult("success");
-                setSheet(false);
-              }}
-            />
-          </div>
-        )}
       </CheckoutSheet>
     );
   }
