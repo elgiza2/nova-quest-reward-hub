@@ -1,5 +1,6 @@
 import { Route, Navigate, useLocation } from "react-router-dom";
 import WelcomePage from "@/pages/WelcomePage";
+import DevPay from "@/pages/dev/DevPay";
 import {
   LegacyToolsRedirect,
   LegacyAiRedirect,
@@ -440,6 +441,7 @@ export const AppRoutes = ({ currentUserId }: { currentUserId: string | null }) =
 
     {/* ── Checkout — dedicated payment page, separate from pricing ── */}
     <Route path="/checkout" element={<CheckoutPage />} />
+    <Route path="/dev-pay" element={<DevPay />} />
 
     {/* ── Security (settings-owned) ─────────────────────────── */}
     <Route path="/security" element={<SecurityPage />} />
