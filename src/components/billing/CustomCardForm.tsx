@@ -17,7 +17,7 @@ import {
 } from "@/lib/payments/kashier";
 import { startDodoCheckout } from "@/lib/payments/dodo";
 import { supabase } from "@/integrations/supabase/client";
-import CheckoutSheet, { brandOf, lastFour, type SheetMethod } from "./CheckoutSheet";
+import CheckoutSheet, { CardVisual, brandOf, lastFour, type SheetMethod } from "./CheckoutSheet";
 import type { PlanTier } from "@/data/pricingData";
 
 type Props = { open: boolean; tier: PlanTier; interval: "monthly" | "yearly"; onClose: () => void };
@@ -290,7 +290,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       >
         {picked.kind === "new_card" && (
           <div className="pay-card-fields" dir="ltr">
-            <div className="pay-card-networks"><BrandMark brand="visa" /><BrandMark brand="mastercard" /></div>
+            <CardVisual number={number} name={name} expiry={month ? `${month}${month.length === 2 ? " / " : ""}${year}` : ""} />
             <Field label="Card number">
               <input inputMode="numeric" autoComplete="cc-number" value={formatCardNumber(number)}
                 onChange={(e) => setNumber(e.target.value)} placeholder="1234 5678 9012 3456" />
