@@ -101,4 +101,6 @@
 ## Oct 30 — payment box per country
 - [x] Remove "!" icon, "Megsy AI" header text and user email; app logo instead of "M"
 - [x] Local methods per visitor country from Dodo's official payment-methods table (subscription-capable only); "other methods" removed; Vodafone Cash Egypt-only
-- [ ] Open the Dodo checkout already narrowed to the picked method: blocked — the server checkout file can't be edited from here (it already receives the visitor country)
+- [x] Dodo checkout narrowed to the picked method + local currency via the app's own checkout endpoint (falls back to the old path until the payment key is set on the host)
+- [x] Prices shown in the visitor's local currency (exact EGP for Egypt, approximate elsewhere) on pricing and checkout
+- [ ] Publish to megsyai.com: waiting on a fresh Vercel connection in this workspace, plus the Dodo key and service key in Vercel settings

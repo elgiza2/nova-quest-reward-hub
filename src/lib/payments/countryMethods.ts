@@ -31,9 +31,6 @@ export type LocalMethod = {
   appleOnly?: boolean;
 };
 
-const KLARNA_COUNTRIES = new Set([
-  "AT", "BE", "CH", "CZ", "DE", "DK", "ES", "FI", "FR", "GB", "GR", "IE", "IT", "NL", "NO", "PL", "PT", "RO", "SE",
-]);
 const SATISPAY_COUNTRIES = new Set(["IT", "LU", "DE", "FR", "AT", "BE"]);
 
 const M: Record<LocalMethodId, LocalMethod> = {
@@ -49,18 +46,22 @@ const M: Record<LocalMethodId, LocalMethod> = {
   satispay: { id: "satispay", label: "Satispay", hint: { en: "Pay from the Satispay app", ar: "ادفع من تطبيق Satispay" }, logo: { kind: "word", text: "S", color: "#FFFFFF", bg: "#EF3E42" } },
 };
 
-/** Ordered list of hosted-checkout methods for a visitor country (ISO alpha-2). */
-export function localMethodsFor(country: string | null | undefined): LocalMethod[] {
+/**
+ * Ordered list of hosted-checkout methods for a visitor country (ISO alpha-2).
+ * `amountUsd` matters for Klarna: Dodo shows it only for US checkouts above $50.
+ */
+export function localMethodsFor(country: string | null | undefined, amountUsd = 0): LocalMethod[] {
   const c = (country ?? "").toUpperCase();
   const out: LocalMethodId[] = [];
   if (c === "IN") out.push("upi", "rupay", "apple_pay");
   else if (c === "BR") out.push("pix", "apple_pay", "google_pay");
   else if (c === "KR") out.push("kakao_pay", "naver_pay", "apple_pay", "google_pay");
-  else if (c === "US") out.push("apple_pay", "google_pay", "cashapp");
-  else {
+  else if (c === "US") {
+    out.push("apple_pay", "google_pay", "cashapp");
+    if (amountUsd > 50) out.push("klarna");
+  } else {
     out.push("apple_pay", "google_pay");
     if (SATISPAY_COUNTRIES.has(c)) out.push("satispay");
-    if (KLARNA_COUNTRIES.has(c)) out.push("klarna");
   }
   return out.map((id) => M[id]);
 }

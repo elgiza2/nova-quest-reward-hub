@@ -65,7 +65,7 @@ export function formatMoney(amount: number, currency: string, ar = false): strin
     return new Intl.NumberFormat(ar ? "ar-EG-u-nu-latn" : "en-US", {
       style: "currency",
       currency,
-      currencyDisplay: currency === "EGP" ? "name" : "narrowSymbol",
+      currencyDisplay: currency === "EGP" && !ar ? "code" : "narrowSymbol",
       maximumFractionDigits: whole ? 0 : 2,
       minimumFractionDigits: 0,
     }).format(whole ? Math.round(amount) : amount);
