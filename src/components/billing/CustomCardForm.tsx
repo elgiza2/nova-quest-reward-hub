@@ -17,7 +17,10 @@ import {
 } from "@/lib/payments/kashier";
 import { startDodoCheckout } from "@/lib/payments/dodo";
 import { supabase } from "@/integrations/supabase/client";
-import CheckoutSheet, { brandOf, lastFour, type SheetMethod } from "./CheckoutSheet";
+import CheckoutSheet, { brandOf, lastFour, VodafoneMark, type SheetMethod } from "./CheckoutSheet";
+
+/** Egyptian mobile number typed in full: 11 digits starting with 01. */
+const VODAFONE_RE = /^01[0-25]\d{8}$/;
 import type { PlanTier } from "@/data/pricingData";
 
 type Props = { open: boolean; tier: PlanTier; interval: "monthly" | "yearly"; onClose: () => void };
@@ -524,7 +527,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                             aria-label="Vodafone Cash wallet number"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))}
-                            placeholder="10 0000 0000"
+                            placeholder="01XXXXXXXXX"
                           />
                         </Field>
                         <p className="checkout-note">We'll send a payment request to approve on your phone.</p>
