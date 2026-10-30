@@ -121,7 +121,7 @@ const PlusMain = (p: PlusContentProps) => {
     },
     {
       id: "integrations",
-      label: isArabic ? "التطبيقات المربوطة" : "Integrations",
+      label: isArabic ? "التطبيقات" : "Apps",
       Icon: Plug,
       onClick: closeThen(() => window.dispatchEvent(new CustomEvent("megsy:open-integrations"))),
     },
