@@ -3,7 +3,8 @@ import { ArrowLeft, Check, Loader2, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BrandMark } from "./CardPreview";
 import { BrandIcon } from "./PaymentMethodMark";
-import artCoat from "@/assets/orange-coat.png.asset.json";
+import artCoatUrl from "@/assets/pricing-coat.webp";
+const artCoat = { url: artCoatUrl };
 
 import {
   applePaySupported,

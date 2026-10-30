@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { useUserLang } from "@/lib/authI18n";
 import { useUserPlan } from "@/hooks/useUserPlan";
 import { getDisplayPrice, getPlan, type PlanTier } from "@/data/pricingData";
-import artCoat from "@/assets/orange-coat.png.asset.json";
+import artCoatUrl from "@/assets/pricing-coat.webp";
+const artCoat = { url: artCoatUrl };
 import MobileSidebarButton from "@/components/shared/MobileSidebarButton";
 
 interface Props {
