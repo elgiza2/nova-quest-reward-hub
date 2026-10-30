@@ -121,81 +121,44 @@ const PlusMain = (p: PlusContentProps) => {
     },
     {
       id: "integrations",
-      label: isArabic ? "التطبيقات المربوطة" : "Integrations",
+      label: isArabic ? "التطبيقات" : "Apps",
       Icon: Plug,
       onClick: closeThen(() => window.dispatchEvent(new CustomEvent("megsy:open-integrations"))),
     },
   ];
 
+  const tiles = [
+    { id: "files", label: isArabic ? "ملفات" : "Files", Icon: FileUp, onClick: closeThen(() => p.fileInputRef.current?.click()) },
+    { id: "photos", label: isArabic ? "صور" : "Photos", Icon: Images, onClick: closeThen(() => p.imageInputRef.current?.click()) },
+    items[1],
+  ];
+
   return (
-    <motion.div key="main" {...fadeProps(-8)} className="flex flex-col gap-2 pb-1">
-      <div
-        dir={isArabic ? "rtl" : "ltr"}
-        className="flex flex-col gap-2 px-1 py-2"
-        style={{ fontFamily: mobileFont }}
-      >
-        <div className="grid grid-cols-2 gap-2 px-0">
-          <button
-            data-no-neo
-            type="button"
-            onClick={closeThen(() => p.fileInputRef.current?.click())}
-            className="group flex h-[102px] flex-col items-center justify-center gap-2 rounded-2xl border border-foreground/[0.08] bg-background px-2 text-center shadow-sm transition-[background-color,transform,border-color] duration-150 hover:border-primary/30 hover:bg-foreground/[0.03] active:scale-[0.98]"
-          >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
-              <FileUp className="h-[21px] w-[21px]" strokeWidth={1.8} />
-            </span>
-            <span className="text-[13px] font-medium text-foreground">
-              {isArabic ? "ملفات" : "Files"}
-            </span>
-          </button>
-          <button
-            data-no-neo
-            type="button"
-            onClick={closeThen(() => p.imageInputRef.current?.click())}
-            className="group flex h-[102px] flex-col items-center justify-center gap-2 rounded-2xl border border-foreground/[0.08] bg-background px-2 text-center shadow-sm transition-[background-color,transform,border-color] duration-150 hover:border-primary/30 hover:bg-foreground/[0.03] active:scale-[0.98]"
-          >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
-              <Images className="h-[21px] w-[21px]" strokeWidth={1.8} />
-            </span>
-            <span className="text-[13px] font-medium text-foreground">
-              {isArabic ? "الصور" : "Photos"}
-            </span>
-          </button>
-        </div>
-        <div className="overflow-hidden rounded-2xl bg-transparent">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className="flex flex-col border-b border-foreground/[0.08] last:border-b-0"
-          >
+    <motion.div key="main" {...fadeProps(-8)} className="flex flex-col">
+      <div dir={isArabic ? "rtl" : "ltr"} className="flex flex-col gap-1.5 p-1" style={{ fontFamily: mobileFont }}>
+        <div className="grid grid-cols-3 gap-1.5">
+          {tiles.map((t) => (
             <button
+              key={t.id}
               data-no-neo
               type="button"
-              onClick={item.onClick}
-              className="plus-row flex h-12 w-full items-center gap-3 border-0 bg-transparent px-3 text-start transition-[background-color,transform] duration-150 hover:bg-foreground/[0.055] active:bg-foreground/[0.09]"
+              onClick={t.onClick}
+              className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-xl bg-muted/60 text-foreground transition-[background-color,transform] duration-150 hover:bg-muted active:scale-[0.96]"
             >
-              <item.Icon
-                className="h-[17px] w-[17px] shrink-0 text-foreground/80"
-                strokeWidth={1.8}
-              />
-              <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-foreground">
-                {item.label}
-              </span>
-              {item.value && (
-                <span className="shrink-0 text-[13px] text-muted-foreground">{item.value}</span>
-              )}
-              {item.expanded !== undefined && (
-                <ChevronLeft
-                  className={`h-4 w-4 shrink-0 text-muted-foreground/60 transition-transform duration-200 ${
-                    item.expanded ? "-rotate-90" : isArabic ? "" : "rotate-180"
-                  }`}
-                  strokeWidth={1.8}
-                />
-              )}
+              <t.Icon className="h-5 w-5" strokeWidth={1.8} />
+              <span className="truncate px-1 text-[11.5px] font-medium">{t.label}</span>
             </button>
-          </div>
-        ))}
+          ))}
         </div>
+        <button
+          data-no-neo
+          type="button"
+          onClick={items[0].onClick}
+          className="flex h-10 w-full items-center gap-2.5 rounded-lg bg-transparent px-2.5 text-start transition-colors hover:bg-muted/60"
+        >
+          <Blocks className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />
+          <span className="flex-1 truncate text-[13px] font-medium text-foreground">{items[0].label}</span>
+        </button>
       </div>
     </motion.div>
   );

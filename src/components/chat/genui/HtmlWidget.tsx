@@ -220,7 +220,7 @@ document.addEventListener('click',function(e){var n=e.target.closest('.tree li>.
 
 function qz(){document.querySelectorAll('.quiz:not([data-q])').forEach(function(z){z.dataset.q='1';var qs=[].slice.call(z.querySelectorAll('.q'));if(!qs.length)return;var ans=[],k=0;var bar=document.createElement('div');bar.className='qbar';bar.innerHTML='<i></i>';z.insertBefore(bar,z.firstChild);function show(){qs.forEach(function(q,i){q.classList.toggle('cur',i===k)});bar.firstChild.style.width=(k/qs.length*100)+'%';__h()}qs.forEach(function(q,i){q.querySelectorAll('.chip').forEach(function(c){c.removeAttribute('data-toggle');c.removeAttribute('data-send')});var nn=document.createElement('div');nn.className='qn';nn.textContent=(i+1)+' / '+qs.length;q.insertBefore(nn,q.firstChild);q.addEventListener('click',function(e){var c=e.target.closest('.chip');var nx=e.target.closest('button.primary');var v=null;if(c)v=c.textContent.trim();else if(nx){var f=q.querySelector('input,textarea,select');v=f?f.value:''}if(v===null)return;e.stopPropagation();var t=q.querySelector('h3,.sec');ans[i]=(t?t.textContent.trim()+': ':'')+v;k++;if(k>=qs.length){bar.firstChild.style.width='100%';megsy.send(ans.join('\n'));z.innerHTML='<p class="muted small">تم إرسال إجاباتك</p>';__h()}else show()},true)});show()});document.querySelectorAll('.game:not([data-g])').forEach(function(g){g.dataset.g='1';var s=0;g.innerHTML='<span class="score">0</span><button class="dot" aria-label="tap"></button>';var d=g.querySelector('.dot'),sc=g.querySelector('.score');function mv(){d.style.left=Math.random()*(g.clientWidth-44)+'px';d.style.top=(30+Math.random()*(g.clientHeight-74))+'px'}d.onclick=function(e){e.stopPropagation();s++;sc.textContent=s;mv()};mv();setInterval(mv,1400)});document.querySelectorAll('.row,.chips').forEach(function(r){if(r.closest('.quiz,.mail,.q'))return;var cs=r.querySelectorAll('.chip[data-send]');if(cs.length&&cs.length===r.children.length){var p=r.previousElementSibling;var asks=p&&/[?؟]/.test(p.textContent);if(!asks)r.remove()}})}
 document.readyState!=='loading'?qz():document.addEventListener('DOMContentLoaded',qz);new MutationObserver(qz).observe(document.documentElement,{childList:true,subtree:true});
-function __h(){parent.postMessage({__megsy:'h',id:window.name,h:Math.ceil(document.body.getBoundingClientRect().height)+8},'*')}
+function __h(){var b=document.body,d=document.documentElement;var h=Math.max(b.scrollHeight,b.offsetHeight,d.scrollHeight,Math.ceil(b.getBoundingClientRect().height));parent.postMessage({__megsy:'h',id:window.name,h:h+8},'*')}new MutationObserver(function(){requestAnimationFrame(__h)}).observe(document.documentElement,{childList:true,subtree:true,attributes:true});
 document.addEventListener('error',function(e){if(e.target.tagName==='IMG'){e.target.remove();__h()}},true);document.querySelectorAll('img[data-q]').forEach(function(im){fetch('https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=3&prop=pageimages&piprop=thumbnail&pithumbsize=800&gsrsearch='+encodeURIComponent(im.getAttribute('data-q'))).then(function(r){return r.json()}).then(function(j){var p=Object.values((j.query||{}).pages||{}).sort(function(a,b){return a.index-b.index}).find(function(x){return x.thumbnail});if(p){im.src=p.thumbnail.source}else{im.remove()}__h()}).catch(function(){im.remove();__h()})});
 new ResizeObserver(__h).observe(document.body);addEventListener('load',__h);document.addEventListener('load',__h,true);[50,300,1000,2500].forEach(function(t){setTimeout(__h,t)});
 </script>`;
@@ -244,7 +244,7 @@ export function HtmlWidget({ html, done }: { html: string; done: boolean }) {
   useEffect(() => {
     const on = (e: MessageEvent) => {
       if (!e.data?.__megsy || e.data.id !== id) return;
-      if (e.data.__megsy === "h") setH(Math.min(2400, Math.max(40, Number(e.data.h) || 0)));
+      if (e.data.__megsy === "h") setH(Math.min(20000, Math.max(40, Number(e.data.h) || 0)));
       if (e.data.__megsy === "open" && /^https?:\/\//.test(String(e.data.url))) window.open(String(e.data.url), "_blank", "noopener,noreferrer");
       if (e.data.__megsy === "send" && onSend) onSend(String(e.data.text).slice(0, 2000));
       if (e.data.__megsy === "connect") {
@@ -279,7 +279,8 @@ export function HtmlWidget({ html, done }: { html: string; done: boolean }) {
       title="Interactive answer"
       sandbox="allow-scripts"
       srcDoc={doc}
-      style={{ height: h }}
+      scrolling="no"
+      style={{ height: h, overflow: "hidden" }}
       className="my-4 block w-full border-0 bg-transparent transition-[height] duration-200"
     />
   );
