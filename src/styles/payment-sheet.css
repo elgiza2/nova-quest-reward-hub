@@ -116,3 +116,10 @@ html body .gp-sheet .checkout-input-wrap:focus-within,html body .play-checkout .
 html body .gp-sheet.gp-sheet .checkout-input-wrap>input{height:50px!important}
 html body .gp-sheet label.border{border-color:var(--gp-line)!important;border-radius:14px!important;height:52px}
 html.dark .gp-ico,html.dark .gp-chip{border-color:oklch(.35 0 0)}
+/* App logo without tile; wordmark logos for local methods */
+html body .gp-sheet .gp-app-icon{background:none!important;box-shadow:none!important;border:0!important;color:var(--gp-ink);width:44px;height:44px}
+.gp-product{padding-top:26px}
+.gp-word{display:grid;place-items:center;min-width:100%;height:100%;font:800 11px/1 system-ui,sans-serif;letter-spacing:-.01em;font-style:italic}
+.gp-word:not([style*=background]){background:transparent}
+.gp-logo--cashapp,.gp-logo--pix,.gp-logo--kakaotalk,.gp-logo--naver{width:18px;height:18px}
+.gp-logo--klarna{width:15px;height:15px}
