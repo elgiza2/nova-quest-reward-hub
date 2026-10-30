@@ -91,3 +91,9 @@
 
 - [x] Telegram bot adds keys for the 4 allowed providers only (agentsky, browser-use, cerebras, deapi)
 - [x] Remove other AI providers from main paths (leftover names in model lists/admin page still to clean)
+
+## Oct 30 — payments, tools, games
+- [x] Floating glass payment sheet with grouped methods and icons; cards + Vodafone Cash via local gateway, Apple Pay / Google Pay / others via international gateway; gateway names hidden
+- [x] 17 full in-chat tools (photo editor, invoices, CV, code, QR, currency, Egypt salary, loan, BMI, passwords, text, charts, social posts, timer, colors, units, notes)
+- [x] 8 Egyptian games (XO, 2048, word guess, Egypt quiz, proverbs, food memory, snake, runner); new waiting game while media generates
+- [ ] Server-side prompt copy (supabase/functions/_shared/genui.ts) not updated: edits there are blocked; browser re-sends the prompt so chat still knows the apps
