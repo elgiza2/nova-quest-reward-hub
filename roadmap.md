@@ -99,6 +99,7 @@
 - [ ] Server-side prompt copy (supabase/functions/_shared/genui.ts) not updated: edits there are blocked; browser re-sends the prompt so chat still knows the apps
 
 ## Oct 30 — payment box per country
+- [x] Remove glass from pricing subscription choices; replace artwork with a seaside editorial photo matching the reference. Mobile choices checked without blur or clipped text; monthly/yearly selection works.
 - [x] Remove "!" icon, "Megsy AI" header text and user email; app logo instead of "M"
 - [x] Local methods per visitor country from Dodo's official payment-methods table (subscription-capable only); "other methods" removed; Vodafone Cash Egypt-only
 - [x] Dodo checkout narrowed to the picked method + local currency via the app's own checkout endpoint (falls back to the old path until the payment key is set on the host)
