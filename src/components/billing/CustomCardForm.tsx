@@ -17,7 +17,7 @@ import {
 } from "@/lib/payments/kashier";
 import { startDodoCheckout } from "@/lib/payments/dodo";
 import { supabase } from "@/integrations/supabase/client";
-import CheckoutSheet, { CardVisual, brandOf, lastFour, type SheetMethod } from "./CheckoutSheet";
+import CheckoutSheet, { brandOf, lastFour, type SheetMethod } from "./CheckoutSheet";
 import type { PlanTier } from "@/data/pricingData";
 
 type Props = { open: boolean; tier: PlanTier; interval: "monthly" | "yearly"; onClose: () => void };
@@ -51,6 +51,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   const [picked, setPicked] = useState<SheetMethod>({ kind: "new_card" });
   const [saved, setSaved] = useState<Array<Extract<SheetMethod, { kind: "saved" }>>>([]);
   const [egypt, setEgypt] = useState(false);
+  const [email, setEmail] = useState<string | null>(null);
 
   // Vodafone Cash is offered to visitors in Egypt only.
   useEffect(() => {
@@ -76,6 +77,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
     (async () => {
       const { data: auth } = await supabase.auth.getUser();
       if (!auth.user) return;
+      if (alive) setEmail(auth.user.email ?? null);
       const { data } = await supabase
         .from("subscriptions")
         .select("id, card_masked")
@@ -287,10 +289,9 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
         onClose={walletWaiting ? cancelWallet : onClose}
         busy={busy || !!startingMethod}
         note={error ?? methodNote}
-      >
-        {picked.kind === "new_card" && (
+        email={email}
+        cardFields={
           <div className="pay-card-fields" dir="ltr">
-            <CardVisual number={number} name={name} expiry={month ? `${month}${month.length === 2 ? " / " : ""}${year}` : ""} />
             <Field label="Card number">
               <input inputMode="numeric" autoComplete="cc-number" value={formatCardNumber(number)}
                 onChange={(e) => setNumber(e.target.value)} placeholder="1234 5678 9012 3456" />
@@ -311,7 +312,8 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
               </Field>
             </div>
           </div>
-        )}
+        }
+      >
         {picked.kind === "vodafone" &&
           (walletWaiting ? (
             <div className="mb-4 flex items-center gap-3 rounded-xl bg-muted/50 p-3 text-[13.5px]">
