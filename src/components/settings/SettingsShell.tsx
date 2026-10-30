@@ -10,7 +10,7 @@ export const useSettingsShell = () => useContext(SettingsShellContext);
 export function SettingsShell({ children }: { children: ReactNode }) {
   return (
     <SettingsShellContext.Provider value={{ mainEl: null, active: false }}>
-      {children}
+      <div data-settings-surface className="contents">{children}</div>
     </SettingsShellContext.Provider>
   );
 }

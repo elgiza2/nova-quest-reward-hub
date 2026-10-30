@@ -1,0 +1,91 @@
+/* Settings-only final layer: preserves chat art and payment sheet styling. */
+html body [data-settings-surface] {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 9%;
+  --card: 0 0% 98%;
+  --card-foreground: 0 0% 9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 9%;
+  --primary: 0 0% 9%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 95%;
+  --secondary-foreground: 0 0% 9%;
+  --muted: 0 0% 95%;
+  --muted-foreground: 0 0% 45%;
+  --accent: 0 0% 94%;
+  --accent-foreground: 0 0% 9%;
+  --border: 0 0% 89%;
+  --input: 0 0% 89%;
+  --ring: 0 0% 30%;
+  --amb-fg: var(--settings-ink);
+  --amb-fg-dim: var(--settings-muted);
+  --amb-fg-mute: var(--settings-muted);
+  --amb-line: var(--settings-line);
+  --amb-line-strong: var(--settings-muted);
+  --amb-surface: var(--settings-surface);
+  --amb-surface-soft: var(--settings-surface);
+  --amb-primary-grad: var(--settings-ink);
+  --amb-primary-shadow: none;
+  color: var(--settings-ink);
+}
+html.dark body [data-settings-surface], html[data-theme="dark"] body [data-settings-surface] {
+  --background: 0 0% 7%; --foreground: 0 0% 97%;
+  --card: 0 0% 11%; --card-foreground: 0 0% 97%;
+  --popover: 0 0% 11%; --popover-foreground: 0 0% 97%;
+  --primary: 0 0% 97%; --primary-foreground: 0 0% 7%;
+  --secondary: 0 0% 16%; --secondary-foreground: 0 0% 97%;
+  --muted: 0 0% 16%; --muted-foreground: 0 0% 70%;
+  --accent: 0 0% 18%; --accent-foreground: 0 0% 97%;
+  --border: 0 0% 22%; --input: 0 0% 22%; --ring: 0 0% 75%;
+}
+html body [data-settings-surface] *,
+html body [data-settings-surface] *::before,
+html body [data-settings-surface] *::after {
+  backdrop-filter: none !important;
+  letter-spacing: 0;
+}
+html body :is(.gx-root, .ms-root, .settings-desktop-canvas, .pep-root, .pep-sheet),
+html body .settings-desktop-canvas[data-settings-home="true"],
+html body [data-settings-surface] .settings-canvas-bg {
+  background: var(--settings-canvas) !important;
+  background-image: none !important;
+  color: var(--settings-ink) !important;
+}
+html body .pep-root::before { background: var(--settings-canvas) !important; backdrop-filter: none !important; }
+html body [data-settings-surface] :is(.gx-card, .ms-card, .settings-desktop-group, .settings-profile-group, .amb-plate, .amb-plate-strong, .amb-hero, .ios26-glass, .ios26-glass-strong, .th-opt) {
+  background: var(--settings-surface) !important;
+  border: 1px solid var(--settings-line) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+html body [data-settings-surface] :is([class*="bg-card"], [class*="bg-foreground/"], [class*="bg-muted"], [class*="bg-gradient"], [class*="bg-primary/"]) {
+  background: var(--settings-surface) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+html body [data-settings-surface] :is(button, [role="button"]) {
+  background-image: none !important;
+  box-shadow: none !important;
+}
+html body [data-settings-surface] :is(button, [role="button"])::before,
+html body [data-settings-surface] :is(button, [role="button"])::after { background-image: none !important; box-shadow: none !important; }
+html body [data-settings-surface] :is(.gx-pill, .amb-btn-gold, button.bg-primary) {
+  background: var(--settings-ink) !important;
+  color: var(--settings-canvas) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html body [data-settings-surface] :is(.gx-hbtn, .ms-hbtn, .gx-input, .amb-input, input:not([type="range"]):not([type="checkbox"]), textarea, select) {
+  background: var(--settings-surface) !important;
+  color: var(--settings-ink) !important;
+  border: 1px solid var(--settings-line) !important;
+  box-shadow: none !important;
+}
+html body [data-settings-surface] :is(.gx-tile, .ms-icon-tile) { background: var(--settings-surface) !important; color: var(--settings-ink) !important; }
+html body [data-settings-surface] .gx-top { background: var(--settings-canvas); }
+html body .gx-scrim { background: var(--settings-overlay); backdrop-filter: none; }
+html body .gx-sheet { background: var(--settings-canvas); box-shadow: none; }
+html body [data-settings-surface] .gx-card-selected,
+html body [data-settings-surface] .th-opt[data-on="true"] { border-color: var(--settings-ink) !important; box-shadow: inset 0 0 0 1px var(--settings-ink) !important; }
+html body [data-settings-surface] :is(button, input, textarea, select, a):focus-visible { outline: 2px solid var(--settings-ink); outline-offset: 3px; }
+html body [data-settings-surface] .th-opt-check { color: var(--settings-canvas); }
+html body [data-settings-surface] .pep-sheet { box-shadow: none; }
