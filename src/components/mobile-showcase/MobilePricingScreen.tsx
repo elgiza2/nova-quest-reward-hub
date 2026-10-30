@@ -43,8 +43,8 @@ export default function MobilePricingScreen({ isYearly, onToggleYearly, onSubscr
     : ["1,000 Megsy Credits every month", "Web research, coding & file analysis", "Images, video & interactive tools in chat"];
   const shown = (l: LocalPrice | null, usd: string) => (l ? `${l.approx ? "≈ " : ""}${l.text}` : usd);
   const options = [
-    { yearly: false, label: isAr ? "شهري" : "Monthly", price: shown(localMonthly, `$${monthly.price.toFixed(2)}`), usd: localMonthly ? `$${monthly.price.toFixed(2)}` : null, note: isAr ? "للشهر الأول" : "First month", detail: isAr ? `ثم ${shown(localThen, `$${pro.monthlyPrice}`)} / شهر` : `Then ${shown(localThen, `$${pro.monthlyPrice}`)} / month` },
-    { yearly: true, label: isAr ? "سنوي" : "Yearly", price: shown(localYearly, `$${yearly.price.toFixed(2)}`), usd: localYearly ? `$${yearly.price.toFixed(2)}` : null, note: isAr ? "دفع سنوي" : "Billed yearly", detail: isAr ? `يعادل ${shown(localYearMo, `$${(yearly.price / 12).toFixed(2)}`)} / شهر` : `${shown(localYearMo, `$${(yearly.price / 12).toFixed(2)}`)} / month equivalent` },
+    { yearly: false, label: isAr ? "شهري" : "Monthly", price: shown(localMonthly, `$${monthly.price.toFixed(2)}`), note: isAr ? "للشهر الأول" : "First month", detail: isAr ? `ثم ${shown(localThen, `$${pro.monthlyPrice}`)} / شهر` : `Then ${shown(localThen, `$${pro.monthlyPrice}`)} / month` },
+    { yearly: true, label: isAr ? "سنوي" : "Yearly", price: shown(localYearly, `$${yearly.price.toFixed(2)}`), note: isAr ? "دفع سنوي" : "Billed yearly", detail: isAr ? `يعادل ${shown(localYearMo, `$${(yearly.price / 12).toFixed(2)}`)} / شهر` : `${shown(localYearMo, `$${(yearly.price / 12).toFixed(2)}`)} / month equivalent` },
   ];
 
   return (
@@ -70,7 +70,7 @@ export default function MobilePricingScreen({ isYearly, onToggleYearly, onSubscr
               const selected = isYearly === option.yearly;
               return <Button key={String(option.yearly)} variant="ghost" className="botanical-option" data-selected={selected} aria-pressed={selected} onClick={() => onToggleYearly(option.yearly)}>
                 <span className="botanical-option-label">{option.label}</span>
-                <span className="botanical-price" dir="ltr">{option.price}{option.usd && <small className="botanical-price-usd">{option.usd}</small>}</span>
+                <span className="botanical-price" dir="ltr">{option.price}</span>
                 <span className="botanical-option-note">{option.note}</span>
                 <span className="botanical-option-detail">{option.detail}</span>
               </Button>;

@@ -1,6 +1,8 @@
 # Roadmap
 
 ## Current request — pricing and settings
+- [ ] Remove secondary dollar amounts whenever pricing and checkout show a local currency.
+- [ ] Review actual signed-in settings home and subpages on mobile and correct the monochrome presentation.
 - [x] Make the pricing Subscribe button black; confirmed in the actual pricing page, with working yearly selection.
 - [x] Reviewed product capabilities and revised pricing summary and benefits; corrected the payment FAQ to reflect country-specific methods without gateway branding.
 - [x] Replace glass across settings routes with opaque monochrome tokens and a settings-only final style layer; checked light/dark presentation at mobile and desktop sizes, no runtime errors, 16 payment tests passed and build OK.

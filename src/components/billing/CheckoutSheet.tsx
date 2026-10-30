@@ -177,7 +177,6 @@ export default function CheckoutSheet(props: Props) {
               {price && (
                 <span className="gp-price" dir="ltr">
                   {local ? `${local.approx ? "≈ " : ""}${local.text}` : `$${price.price}`}
-                  {local && <small>${price.price}</small>}
                 </span>
               )}
             </div>
