@@ -26,6 +26,7 @@ const ProfileEditPage = () => {
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [failedAvatar, setFailedAvatar] = useState<string | null>(null);
   const [avatarBusy, setAvatarBusy] = useState(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
 
@@ -175,7 +176,7 @@ const ProfileEditPage = () => {
           <section className="pep-card">
             <button type="button" className="pep-row pep-row-btn" onClick={pickAvatar} disabled={avatarBusy}>
               <span className="pep-avatar">
-                {avatarUrl ? <img src={avatarUrl} alt="" className="pep-avatar-img" /> : initial}
+                {avatarUrl && failedAvatar !== avatarUrl ? <img src={avatarUrl} alt="" className="pep-avatar-img" onError={() => setFailedAvatar(avatarUrl)} /> : initial}
               </span>
               <span className="pep-row-label">{tx("Profile photo")}</span>
               <span className="pep-row-trailing">

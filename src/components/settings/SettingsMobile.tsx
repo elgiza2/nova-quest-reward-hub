@@ -69,6 +69,7 @@ const SettingsMobile = () => {
   const tx = (text: string) => translateExactText(text, lang);
   const { plan, credits } = useCredits();
   const [userEmail, setUserEmail] = useState("");
+  const [failedAvatar, setFailedAvatar] = useState<string | null>(null);
 
   const userName = account.name || userEmail.split("@")[0] || "User";
 
@@ -179,7 +180,7 @@ const SettingsMobile = () => {
         <main className="ms-body">
           <div className="ms-card ms-profile-group">
             <Button variant="ghost" type="button" className="ms-profile" onClick={() => navigate("/settings/profile/edit")}>
-              {account.avatarUrl ? <img src={account.avatarUrl} alt="" className="ms-avatar" loading="lazy" decoding="async" /> : <span className="ms-avatar ms-avatar-fallback">{initialsOf(userName)}</span>}
+              {account.avatarUrl && failedAvatar !== account.avatarUrl ? <img src={account.avatarUrl} alt="" className="ms-avatar" loading="lazy" decoding="async" onError={() => setFailedAvatar(account.avatarUrl)} /> : <span className="ms-avatar ms-avatar-fallback">{initialsOf(userName)}</span>}
               <span className="ms-profile-text"><span className="ms-profile-name">{userName}</span><span className="ms-profile-sub">{tx("View Profile")}</span></span>
               {isAr ? <ChevronLeft className="ms-row-chev" /> : <ChevronRight className="ms-row-chev" />}
             </Button>
