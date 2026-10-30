@@ -212,7 +212,7 @@ img:not(.fav):not(.yt img):not(.ba img):not(.connect img){height:auto;object-fit
 .quiz{padding:18px;border-radius:20px;background:var(--soft);border:1px solid var(--line)}
 .quiz .q h3{font-size:16px;font-weight:700;line-height:1.5;margin:2px 0 14px}
 .quiz .opts{gap:8px}
-.quiz .opts .chip{background:var(--bg,#fff)!important;border:1px solid var(--line)!important;box-shadow:none!important;color:var(--fg)!important;font-weight:500;border-radius:14px;justify-content:flex-start;transition:border-color .2s,transform .15s}
+.quiz .opts .chip{background:var(--glass2)!important;border:1px solid var(--line)!important;box-shadow:none!important;color:var(--fg)!important;font-weight:500;border-radius:14px;justify-content:flex-start;transition:border-color .2s,transform .15s}
 .quiz .opts .chip:hover{border-color:var(--accent)!important}.quiz .opts .chip:active{transform:scale(.98)}
 .quiz .opts .chip .points_wrapper{display:none}
 /* Steps: same tile look as the other drawings, connected by a line. */
@@ -220,13 +220,13 @@ img:not(.fav):not(.yt img):not(.ba img):not(.connect img){height:auto;object-fit
 .step{background:var(--soft);border:1px solid var(--line);border-radius:18px;margin-bottom:10px;padding-top:14px;padding-bottom:14px}
 .step::before{top:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 12px -4px var(--accent)}
 .step:not(:last-child)::after{content:"";position:absolute;inset-inline-start:28px;top:46px;bottom:-12px;width:2px;background:var(--line)}
-.step b{font-size:15px;font-weight:700}.step a{display:inline-flex;margin-top:8px;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--bg,#fff);border:1px solid var(--line);text-decoration:none;color:var(--fg)}
+.step b{font-size:15px;font-weight:700}.step a{display:inline-flex;margin-top:8px;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--glass2);border:1px solid var(--line);text-decoration:none;color:var(--fg)}
 /* Strategy tree: clean connected cards. */
 .tree{gap:12px;width:100%}
 .tree>.node,.tree>li>.node{font-size:15px;padding:12px 16px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
 .tree ul{border-inline-start:2px solid var(--line);margin-inline-start:18px;padding-inline-start:18px;gap:10px}
 .tree li::before{background:var(--line);inset-inline-start:-18px;width:16px;top:20px}
-.tree .node{background:var(--bg,#fff);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:600;min-width:140px}
+.tree .node{background:var(--glass2);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:600;min-width:140px}
 .tree li:has(>ul)>.node::after{content:"▾";margin-inline-start:8px;opacity:.5;font-size:11px}.tree li.shut>.node::after{content:"▸"}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 `;
