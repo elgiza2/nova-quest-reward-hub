@@ -18,10 +18,10 @@ import {
 import { startDodoCheckout } from "@/lib/payments/dodo";
 import { supabase } from "@/integrations/supabase/client";
 import CheckoutSheet, { brandOf, lastFour, VodafoneMark, type SheetMethod } from "./CheckoutSheet";
+import type { PlanTier } from "@/data/pricingData";
 
 /** Egyptian mobile number typed in full: 11 digits starting with 01. */
 const VODAFONE_RE = /^01[0-25]\d{8}$/;
-import type { PlanTier } from "@/data/pricingData";
 
 type Props = { open: boolean; tier: PlanTier; interval: "monthly" | "yearly"; onClose: () => void };
 
