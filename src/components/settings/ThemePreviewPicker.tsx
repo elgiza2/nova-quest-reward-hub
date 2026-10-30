@@ -1,5 +1,6 @@
 /** @doc Appearance picker — three live theme previews with a clear selection ring. */
-import { Check } from "lucide-react";
+import { Sun, Moon, Monitor } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { translateExactText, useUserLang } from "@/lib/authI18n";
 import type { ThemeMode } from "@/lib/theme";
 
@@ -9,22 +10,6 @@ const OPTIONS: Array<{ value: ThemeMode; label: string }> = [
   { value: "system", label: "System" },
 ];
 
-/** Miniature of the real UI so the choice is obvious before it is applied. */
-function Preview({ mode }: { mode: ThemeMode }) {
-  return (
-    <span className="th-pv" data-mode={mode} aria-hidden="true">
-      <span className="th-pv-top">
-        <span className="th-pv-avatar" />
-        <span className="th-pv-pill" />
-      </span>
-      <span className="th-pv-body">
-        <span className="th-pv-line" />
-        <span className="th-pv-line th-pv-line-2" />
-      </span>
-      <span className="th-pv-cta" />
-    </span>
-  );
-}
 
 export default function ThemePreviewPicker({
   value,
@@ -38,11 +23,10 @@ export default function ThemePreviewPicker({
 
   return (
     <div className="th-picker" role="radiogroup" aria-label={tx("Appearance")}>
-      <style>{pickerCss}</style>
       {OPTIONS.map(({ value: mode, label }) => {
         const on = value === mode;
         return (
-          <button
+          <Button variant="ghost"
             key={mode}
             type="button"
             role="radio"
@@ -52,14 +36,9 @@ export default function ThemePreviewPicker({
             onClick={() => onChange(mode)}
             className="th-opt"
           >
-            <Preview mode={mode} />
+            {mode === "light" ? <Sun aria-hidden="true" /> : mode === "dark" ? <Moon aria-hidden="true" /> : <Monitor aria-hidden="true" />}
             <span className="th-opt-label">{tx(label)}</span>
-            {on && (
-              <span className="th-opt-check" aria-hidden="true">
-                <Check strokeWidth={3.2} />
-              </span>
-            )}
-          </button>
+          </Button>
         );
       })}
     </div>
