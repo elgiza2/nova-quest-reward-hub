@@ -12,6 +12,9 @@ import {
   Images,
   Blocks,
   FileUp,
+  Camera,
+  Folder,
+  Image as ImageIcon,
 } from "lucide-react";
 
 import { toast } from "sonner";
@@ -128,41 +131,30 @@ const PlusMain = (p: PlusContentProps) => {
   ];
 
   const tiles = [
-    { id: "files", label: isArabic ? "ملفات" : "Files", Icon: FileUp, onClick: closeThen(() => p.fileInputRef.current?.click()) },
-    { id: "photos", label: isArabic ? "صور" : "Photos", Icon: Images, onClick: closeThen(() => p.imageInputRef.current?.click()) },
-    items[1],
+    { id: "camera", label: isArabic ? "كاميرا" : "Camera", Icon: Camera, onClick: closeThen(() => p.cameraInputRef.current?.click()) },
+    { id: "photos", label: isArabic ? "صور" : "Photos", Icon: ImageIcon, onClick: closeThen(() => p.imageInputRef.current?.click()) },
+    { id: "files", label: isArabic ? "ملفات" : "Files", Icon: Folder, onClick: closeThen(() => p.fileInputRef.current?.click()) },
   ];
+  void items;
 
   return (
     <motion.div key="main" {...fadeProps(-8)} className="flex flex-col">
-      <div dir={isArabic ? "rtl" : "ltr"} className="flex flex-col gap-1.5 p-1" style={{ fontFamily: mobileFont }}>
-        <div className="grid grid-cols-3 gap-1.5">
-          {tiles.map((t) => (
-            <button
-              key={t.id}
-              data-no-neo
-              type="button"
-              onClick={t.onClick}
-              className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-xl bg-muted/60 text-foreground transition-[background-color,transform] duration-150 hover:bg-muted active:scale-[0.96]"
-            >
-              <t.Icon className="h-5 w-5" strokeWidth={1.8} />
-              <span className="truncate px-1 text-[11.5px] font-medium">{t.label}</span>
-            </button>
-          ))}
-        </div>
-        <button
-          data-no-neo
-          type="button"
-          onClick={items[0].onClick}
-          className="flex h-10 w-full items-center gap-2.5 rounded-lg bg-transparent px-2.5 text-start transition-colors hover:bg-muted/60"
-        >
-          <Blocks className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />
-          <span className="flex-1 truncate text-[13px] font-medium text-foreground">{items[0].label}</span>
-        </button>
+      <div dir={isArabic ? "rtl" : "ltr"} className="grid grid-cols-3 gap-3 p-2" style={{ fontFamily: mobileFont }}>
+        {tiles.map((t) => (
+          <button
+            key={t.id}
+            data-no-neo
+            type="button"
+            onClick={t.onClick}
+            className="flex h-[100px] flex-col items-center justify-center gap-2.5 rounded-[22px] bg-muted/50 text-foreground transition-[background-color,transform] duration-150 hover:bg-muted active:scale-[0.96]"
+          >
+            <t.Icon className="h-6 w-6" strokeWidth={1.7} />
+            <span className="truncate px-1 text-[14px] font-normal">{t.label}</span>
+          </button>
+        ))}
       </div>
     </motion.div>
   );
-
 };
 
 const PlusModels = (p: PlusContentProps) => (
