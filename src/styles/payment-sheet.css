@@ -63,3 +63,8 @@ html body .play-checkout h1,html body .play-checkout h2,html body .play-checkout
 html body .play-checkout .payment-red{fill:var(--payment-red)!important}html body .play-checkout .payment-white{fill:oklch(1 0 0)!important}html body .play-checkout .payment-yellow{fill:var(--payment-yellow)!important}html body .play-checkout .payment-orange{fill:var(--payment-orange)!important}
 .play-checkout[data-wide=true]{max-width:560px}
 @media(prefers-reduced-motion:reduce){.play-checkout *{animation:none!important;transition:none!important}}
+html body .play-checkout.play-checkout .checkout-input-wrap>input,html body .play-checkout.play-checkout label input{appearance:none!important;-webkit-appearance:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important;background:transparent!important;padding:0!important;margin:0!important;min-height:0!important;height:42px!important;font-size:15px!important;font-weight:500!important}
+html body .play-checkout.play-checkout .checkout-input-wrap>input::placeholder{color:var(--pay-muted)!important;-webkit-text-fill-color:var(--pay-muted)!important;opacity:.7}
+html body .play-checkout.play-checkout button.play-back{background:var(--pay-soft)!important;border:1px solid var(--pay-line)!important;color:var(--pay-ink)!important}
+html body .play-checkout.play-checkout button.play-back svg{color:var(--pay-ink)!important;stroke:currentColor;opacity:1}
+.play-checkout{background:oklch(1 0 0)}html.dark .play-checkout{background:var(--pay-bg)}
