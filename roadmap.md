@@ -1,5 +1,19 @@
 # Roadmap
 
+## Oct 30 batch
+- [x] Store-style payment sheet (plan + price, method row, saved cards by last 4, add card opens card page); Vodafone Cash for Egypt only
+- [x] Pricing photo bundled + compressed (1.4MB → 59KB), lighter glass
+- [x] Welcome slide 2 new photo (woman); referral required-steps list removed; jump-to-latest button removed
+- [x] Drawings: photos at natural size, question card (title + clean options), steps/tree restyle, send-button end icon removed, no trailing question lines, bold headings
+- [x] Pink drifting chat background, transparent mobile top bar
+- [ ] Auto-renew: renewal job (kashier-renewals) is not scheduled anywhere — needs a scheduled run + secret
+- [ ] Import megsy-global-voice design for About / Media / Legal pages
+- [ ] Unify thinking/steps look across all agents
+- [ ] Memory system not working — investigate
+- [ ] Agent Sky used for trivial tasks; agent unaware of its capabilities
+- [ ] Vercel: drawings disappear + slow fast chat (missing Cerebras key / env on Vercel)
+- [ ] Composer floating with content passing beneath (desktop)
+
 - [x] Quick authenticated review: agents + opens chat draft, text response works, interactive question renders and its button sends the choice; settings, integrations, pricing and usage open. Removed auth-callback re-entry and history blocking from workspace loading; 100 existing tests and 2 new regression tests passed.
 - [ ] External latency remains: specialist loading took 22–29 seconds and a widget required over 25 seconds; upstream generation/loading response time is not resolved by the workspace fix. Paid media, real payments and actual computer execution were not exercised in this quick review.
 
