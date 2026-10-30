@@ -51,20 +51,29 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   const [picked, setPicked] = useState<SheetMethod>({ kind: "new_card" });
   const [saved, setSaved] = useState<Array<Extract<SheetMethod, { kind: "saved" }>>>([]);
   const [egypt, setEgypt] = useState(false);
-  const [email, setEmail] = useState<string | null>(null);
+  const [country, setCountry] = useState<string | null>(null);
 
-  // Vodafone Cash is offered to visitors in Egypt only.
+  // Visitor country: Vodafone Cash is Egypt-only, and local hosted methods follow the country.
   useEffect(() => {
     if (!open) return;
     let alive = true;
+    const apply = (c: string | null) => {
+      if (!alive) return;
+      const resolved = c ?? countryFromTimezone();
+      setCountry(resolved);
+      setEgypt(resolved === "EG");
+    };
+    const forced = import.meta.env.DEV ? new URLSearchParams(window.location.search).get("pay_country") : null;
+    if (forced && /^[A-Za-z]{2}$/.test(forced)) {
+      apply(forced.toUpperCase());
+      return () => {
+        alive = false;
+      };
+    }
     fetch("/api/public/geo")
       .then((r) => r.json())
-      .then((j: { country?: string | null }) => {
-        if (!alive) return;
-        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        setEgypt(j.country ? j.country === "EG" : tz === "Africa/Cairo");
-      })
-      .catch(() => alive && setEgypt(Intl.DateTimeFormat().resolvedOptions().timeZone === "Africa/Cairo"));
+      .then((j: { country?: string | null }) => apply(j.country ?? null))
+      .catch(() => apply(null));
     return () => {
       alive = false;
     };
@@ -77,7 +86,6 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
     (async () => {
       const { data: auth } = await supabase.auth.getUser();
       if (!auth.user) return;
-      if (alive) setEmail(auth.user.email ?? null);
       const { data } = await supabase
         .from("subscriptions")
         .select("id, card_masked")
@@ -232,6 +240,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       tier,
       interval,
       methodId: methodId ?? undefined,
+      country: country ?? undefined,
     });
     setStartingMethod(null);
     if (outcome.ok) return;
@@ -260,8 +269,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
         return;
       }
       if (picked.kind === "global") {
-        const names = { apple_pay: "Apple Pay", google_pay: "Google Pay", more: "This method" } as const;
-        void startRedirect(picked.id === "more" ? null : picked.id, names[picked.id]);
+        void startRedirect(picked.id, picked.id.replace(/_/g, " "));
         return;
       }
       // New card: fields are inline in the sheet. Saved card: confirm with the bank on the card page.
@@ -289,7 +297,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
         onClose={walletWaiting ? cancelWallet : onClose}
         busy={busy || !!startingMethod}
         note={error ?? methodNote}
-        email={email}
+        country={country}
         cardFields={
           <div className="pay-card-fields" dir="ltr">
             <Field label="Card number">
@@ -642,6 +650,18 @@ const METHODS: Tile[] = [
   { id: "google_pay", label: "Google Pay", redirect: "google_pay" },
   { id: "more", label: "More", redirect: null },
 ];
+
+/** Fallback when the edge does not report a country (local dev, some proxies). */
+function countryFromTimezone(): string | null {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const map: Record<string, string> = {
+    "Africa/Cairo": "EG", "Asia/Kolkata": "IN", "Asia/Calcutta": "IN", "America/Sao_Paulo": "BR",
+    "Asia/Seoul": "KR", "Europe/Rome": "IT", "Europe/Berlin": "DE", "Europe/Paris": "FR", "Europe/London": "GB",
+    "Europe/Madrid": "ES", "Europe/Amsterdam": "NL", "America/New_York": "US", "America/Chicago": "US",
+    "America/Denver": "US", "America/Los_Angeles": "US",
+  };
+  return map[tz] ?? null;
+}
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (

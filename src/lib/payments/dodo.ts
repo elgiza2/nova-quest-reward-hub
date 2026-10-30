@@ -63,6 +63,8 @@ export async function startDodoCheckout(input: {
   tier: string;
   interval: "monthly" | "yearly";
   methodId?: string;
+  /** Visitor country (ISO alpha-2) so the hosted checkout shows local methods. */
+  country?: string;
 }): Promise<DodoStartResult> {
   if (!DODO_READY) return { ok: false, reason: "not-configured" };
 
@@ -78,6 +80,7 @@ export async function startDodoCheckout(input: {
         interval: input.interval,
         offer: input.interval === "yearly" ? "standard" : "intro",
         method_id: input.methodId ?? null,
+        ...(input.country ? { country: input.country } : {}),
       },
     });
 
