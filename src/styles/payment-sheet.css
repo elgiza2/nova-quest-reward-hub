@@ -123,3 +123,23 @@ html body .gp-sheet .gp-app-icon{background:none!important;box-shadow:none!impor
 .gp-word:not([style*=background]){background:transparent}
 .gp-logo--cashapp,.gp-logo--pix,.gp-logo--kakaotalk,.gp-logo--naver{width:18px;height:18px}
 .gp-logo--klarna{width:15px;height:15px}
+/* Megsy logo (white artwork) drawn black on the light sheet */
+html body .gp-sheet .gp-app-icon img{width:40px;height:40px;object-fit:contain;filter:brightness(0)}
+html.dark body .gp-sheet .gp-app-icon img{filter:none}
+.gp-price{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}
+.gp-price small{font-size:11.5px;font-weight:400;color:var(--gp-muted);margin-top:2px}
+/* Compact chosen-method row on the first screen */
+html body .gp-sheet button.gp-selected.gp-selected--compact{min-height:54px;padding:9px 12px;gap:12px;border-radius:14px!important;margin:6px 14px 0;font-size:14.5px}
+.gp-selected--compact .gp-ico{width:38px;height:26px}
+.gp-selected--compact .gp-label{font-size:14.5px;line-height:1.3}
+.gp-selected--compact .gp-chev{width:26px;height:26px}
+.gp-label small.gp-renew{font-size:11px;line-height:1.35;margin-top:1px;letter-spacing:.01em;opacity:.85}
+/* Vodafone Cash number */
+.gp-wallet{display:flex;align-items:center;height:50px;margin-bottom:14px;border:1px solid var(--gp-line);border-radius:14px;background:var(--gp-bg);overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.gp-wallet:focus-within{border-color:var(--gp-ink);box-shadow:0 0 0 3px oklch(.5 0 0 / .12)}
+.gp-wallet-cc{display:flex;align-items:center;gap:6px;height:100%;padding:0 12px;border-inline-end:1px solid var(--gp-line);font-size:15px;font-weight:600;color:var(--gp-ink);background:var(--gp-sel)}
+.gp-wallet-cc .gp-logo--vodafone{width:18px;height:18px}
+.gp-wallet input{flex:1;min-width:0;height:100%;padding:0 12px;border:0;outline:0;background:transparent;font-size:16px;letter-spacing:.06em;color:var(--gp-ink)}
+.gp-wallet input::placeholder{color:var(--gp-muted);letter-spacing:.04em}
+.gp-wallet-ok{padding-inline-end:12px;color:var(--gp-ink)}
+.gp-wallet-help{margin:-8px 2px 12px;font-size:11.5px;color:var(--gp-muted)}

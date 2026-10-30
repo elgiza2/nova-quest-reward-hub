@@ -15,6 +15,7 @@ import { Route as ApiAnythingRouteImport } from './routes/api/anything'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiClerkRouteImport } from './routes/api/clerk'
 import { Route as ApiDeepResearchRouteImport } from './routes/api/deep-research'
+import { Route as ApiDodoCheckoutRouteImport } from './routes/api/dodo-checkout'
 import { Route as ApiLongRunRouteImport } from './routes/api/long-run'
 import { Route as ApiMcpRouteImport } from './routes/api/mcp'
 import { Route as ApiReadUrlRouteImport } from './routes/api/read-url'
@@ -58,6 +59,11 @@ const ApiClerkRoute = ApiClerkRouteImport.update({
 const ApiDeepResearchRoute = ApiDeepResearchRouteImport.update({
   id: '/api/deep-research',
   path: '/api/deep-research',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDodoCheckoutRoute = ApiDodoCheckoutRouteImport.update({
+  id: '/api/dodo-checkout',
+  path: '/api/dodo-checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiLongRunRoute = ApiLongRunRouteImport.update({
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/api/clerk': typeof ApiClerkRoute
   '/api/deep-research': typeof ApiDeepResearchRoute
+  '/api/dodo-checkout': typeof ApiDodoCheckoutRoute
   '/api/long-run': typeof ApiLongRunRoute
   '/api/mcp': typeof ApiMcpRoute
   '/api/read-url': typeof ApiReadUrlRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/api/clerk': typeof ApiClerkRoute
   '/api/deep-research': typeof ApiDeepResearchRoute
+  '/api/dodo-checkout': typeof ApiDodoCheckoutRoute
   '/api/long-run': typeof ApiLongRunRoute
   '/api/mcp': typeof ApiMcpRoute
   '/api/read-url': typeof ApiReadUrlRoute
@@ -186,6 +194,7 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/api/clerk': typeof ApiClerkRoute
   '/api/deep-research': typeof ApiDeepResearchRoute
+  '/api/dodo-checkout': typeof ApiDodoCheckoutRoute
   '/api/long-run': typeof ApiLongRunRoute
   '/api/mcp': typeof ApiMcpRoute
   '/api/read-url': typeof ApiReadUrlRoute
@@ -210,6 +219,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/clerk'
     | '/api/deep-research'
+    | '/api/dodo-checkout'
     | '/api/long-run'
     | '/api/mcp'
     | '/api/read-url'
@@ -232,6 +242,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/clerk'
     | '/api/deep-research'
+    | '/api/dodo-checkout'
     | '/api/long-run'
     | '/api/mcp'
     | '/api/read-url'
@@ -254,6 +265,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/api/clerk'
     | '/api/deep-research'
+    | '/api/dodo-checkout'
     | '/api/long-run'
     | '/api/mcp'
     | '/api/read-url'
@@ -277,6 +289,7 @@ export interface RootRouteChildren {
   ApiChatRoute: typeof ApiChatRoute
   ApiClerkRoute: typeof ApiClerkRoute
   ApiDeepResearchRoute: typeof ApiDeepResearchRoute
+  ApiDodoCheckoutRoute: typeof ApiDodoCheckoutRoute
   ApiLongRunRoute: typeof ApiLongRunRoute
   ApiMcpRoute: typeof ApiMcpRoute
   ApiReadUrlRoute: typeof ApiReadUrlRoute
@@ -335,6 +348,13 @@ declare module '@tanstack/react-router' {
       path: '/api/deep-research'
       fullPath: '/api/deep-research'
       preLoaderRoute: typeof ApiDeepResearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/dodo-checkout': {
+      id: '/api/dodo-checkout'
+      path: '/api/dodo-checkout'
+      fullPath: '/api/dodo-checkout'
+      preLoaderRoute: typeof ApiDodoCheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/long-run': {
@@ -445,6 +465,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiChatRoute: ApiChatRoute,
   ApiClerkRoute: ApiClerkRoute,
   ApiDeepResearchRoute: ApiDeepResearchRoute,
+  ApiDodoCheckoutRoute: ApiDodoCheckoutRoute,
   ApiLongRunRoute: ApiLongRunRoute,
   ApiMcpRoute: ApiMcpRoute,
   ApiReadUrlRoute: ApiReadUrlRoute,
