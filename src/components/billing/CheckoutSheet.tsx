@@ -130,9 +130,10 @@ export default function CheckoutSheet(props: Props) {
   return (
     <div dir={ar ? "rtl" : "ltr"} className="gp-overlay">
       <div className="gp-scrim" onClick={busy ? undefined : onClose} />
-      <motion.div role="dialog" aria-modal="true" aria-label={t("Checkout", "الدفع")}
+      <motion.div
         initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ type: "tween", duration: 0.28, ease: [0.2, 0, 0, 1] }}
         className="gp-sheet" data-full={full || undefined}>
+        <div role="dialog" aria-modal="true" aria-label={t("Checkout", "الدفع")} className="contents">
         {view === "main" && (
           <>
             <div className="gp-brand"><span>Megsy AI</span></div>
@@ -221,6 +222,7 @@ export default function CheckoutSheet(props: Props) {
             </div>
           </div>
         )}
+        </div>
       </motion.div>
     </div>
   );
