@@ -74,6 +74,33 @@ export async function startDodoCheckout(input: {
     } = await supabase.auth.getSession();
     if (!session?.access_token) return { ok: false, reason: "unauthenticated" };
 
+    // Preferred: this site's own checkout endpoint, which narrows the hosted page to the
+    // chosen method and bills in local currency. Falls back to the older backend function
+    // when this host has no payment keys yet.
+    try {
+      const res = await fetch("/api/dodo-checkout", {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({
+          tier: input.tier,
+          interval: input.interval,
+          offer: input.interval === "yearly" ? "standard" : "intro",
+          method_id: input.methodId ?? null,
+          country: input.country ?? null,
+        }),
+      });
+      const body = (await res.json().catch(() => null)) as { checkout_url?: string | null; error?: string; code?: string } | null;
+      if (res.ok && body?.checkout_url) {
+        openExternalCheckout(body.checkout_url);
+        return { ok: true };
+      }
+      if (res.status !== 503 && res.status !== 404 && body?.code !== "not_configured" && body?.error) {
+        return { ok: false, reason: res.status === 401 ? "unauthenticated" : "failed", message: body.error };
+      }
+    } catch {
+      /* fall through to the backend function */
+    }
+
     const { data, error } = await supabase.functions.invoke("dodo-checkout", {
       body: {
         tier: input.tier,
