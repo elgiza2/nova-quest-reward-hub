@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current request — pricing and settings
+- [ ] Make the pricing Subscribe button black.
+- [ ] Review actual product capabilities and revise pricing copy without unsupported promises.
+- [ ] Replace glass across all settings pages with opaque monochrome surfaces; verify mobile and desktop presentation.
+
 ## Current visual correction
 - [x] Restore multicolored particle styling across question options, steps and strategy-tree nodes.
 - [x] Match Google Play references for purchase and payment-method sheets, and redesign Add New Card consistently.
