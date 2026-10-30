@@ -97,3 +97,8 @@
 - [x] 17 full in-chat tools (photo editor, invoices, CV, code, QR, currency, Egypt salary, loan, BMI, passwords, text, charts, social posts, timer, colors, units, notes)
 - [x] 8 Egyptian games (XO, 2048, word guess, Egypt quiz, proverbs, food memory, snake, runner); new waiting game while media generates
 - [ ] Server-side prompt copy (supabase/functions/_shared/genui.ts) not updated: edits there are blocked; browser re-sends the prompt so chat still knows the apps
+
+## Oct 30 — payment box per country
+- [x] Remove "!" icon, "Megsy AI" header text and user email; app logo instead of "M"
+- [x] Local methods per visitor country from Dodo's official payment-methods table (subscription-capable only); "other methods" removed; Vodafone Cash Egypt-only
+- [ ] Open the Dodo checkout already narrowed to the picked method: blocked — the server checkout file can't be edited from here (it already receives the visitor country)
