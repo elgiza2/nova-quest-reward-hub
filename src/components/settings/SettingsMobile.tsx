@@ -184,7 +184,6 @@ const SettingsMobile = () => {
               <span className="ms-profile-text"><span className="ms-profile-name">{userName}</span><span className="ms-profile-sub">{tx("View Profile")}</span></span>
               {isAr ? <ChevronLeft className="ms-row-chev" /> : <ChevronRight className="ms-row-chev" />}
             </Button>
-            <Button variant="ghost" type="button" className="ms-row ms-row-div" onClick={() => navigate("/settings/profile/edit")}><span className="ms-row-label">{tx("Edit Profile")}</span>{isAr ? <ChevronLeft className="ms-row-chev" /> : <ChevronRight className="ms-row-chev" />}</Button>
           </div>
           <div className="ms-card">{accountRows.map(renderRow)}</div>
           <section><h2 className="ms-section-title">{tx("Preferences")}</h2><div className="ms-card">{appearanceRows.map(renderRow)}</div></section>

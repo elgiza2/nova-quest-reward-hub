@@ -130,3 +130,77 @@ html body [data-settings-surface] .gx-actions .gx-pill:first-child {
   background: var(--settings-surface) !important; color: var(--settings-ink) !important;
   border: 1px solid var(--settings-line) !important;
 }
+/* Settings controls must not inherit the chat's global switch/CTA overrides. */
+html body [data-settings-surface] [role="switch"] {
+  position: relative !important; display: inline-block !important;
+  width: 44px !important; height: 26px !important; min-width: 44px !important;
+  flex: 0 0 44px !important; padding: 0 !important; margin: 0 !important;
+  border: 0 !important; border-radius: 999px !important;
+  background: var(--settings-line) !important; background-image: none !important;
+  box-shadow: none !important; animation: none !important; overflow: hidden;
+  opacity: 1; transition: background .2s ease;
+}
+html body [data-settings-surface] [role="switch"]:is([aria-checked="true"], [data-state="checked"]) { background: var(--settings-ink) !important; }
+html body [data-settings-surface] [role="switch"] > span {
+  position: absolute !important; display: block !important;
+  width: 20px !important; height: 20px !important; top: 3px !important;
+  left: 3px !important; right: auto !important; margin: 0 !important;
+  border: 0 !important; border-radius: 999px !important;
+  background: var(--settings-canvas) !important; box-shadow: none !important;
+  translate: none !important; transform: translateX(0) !important; transition: transform .2s ease !important;
+}
+html body [data-settings-surface] [role="switch"]:is([aria-checked="true"], [data-state="checked"]) > span { transform: translateX(18px) !important; }
+html body [data-settings-surface] [dir="rtl"] [role="switch"] > span { left: auto !important; right: 3px !important; }
+html body [data-settings-surface] [dir="rtl"] [role="switch"]:is([aria-checked="true"], [data-state="checked"]) > span { transform: translateX(-18px) !important; }
+html body [data-settings-surface] [role="switch"]:disabled { opacity: .45; cursor: not-allowed; }
+/* Unframed home sections, calmer spacing, and one compact appearance selector. */
+html body [data-settings-surface] .ms-header { padding: 20px 24px 24px; grid-template-columns: 40px 1fr 40px; }
+html body [data-settings-surface] .ms-body { padding: 0 24px; gap: 28px; }
+html body [data-settings-surface] .ms-card {
+  border: 0 !important; border-radius: 0 !important; background: transparent !important;
+  overflow: visible; animation: none;
+}
+html body [data-settings-surface] .ms-profile-group { padding-bottom: 20px; border-bottom: 1px solid var(--settings-line) !important; }
+html body [data-settings-surface] .ms-profile { padding: 0 !important; min-height: 62px; }
+html body [data-settings-surface] .ms-avatar { width: 48px; height: 48px; }
+html body [data-settings-surface] .ms-section-title { padding: 0; margin: 0 0 8px; font-size: 12px; font-weight: 500 !important; }
+html body [data-settings-surface] .ms-row { min-height: 54px; padding: 12px 0 !important; gap: 14px; }
+html body [data-settings-surface] .ms-row-div::before { inset-inline-start: 36px; background: var(--settings-line); opacity: .65; }
+html body [data-settings-surface] .ms-row-label { font-size: 14px; }
+html body [data-settings-surface] :is(.ms-icon-tile, .gx-tile) { background: transparent !important; border-radius: 0; }
+html body [data-settings-surface] .ms-row-stack { padding-block: 16px !important; }
+html body [data-settings-surface] .ms-row-picker { margin-top: 14px; }
+html body [data-settings-surface] .th-picker { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 4px; padding: 4px; background: var(--settings-surface); border: 1px solid var(--settings-line); border-radius: 8px; }
+html body [data-settings-surface] .th-opt {
+  display: flex; flex-direction: row; justify-content: center; align-items: center;
+  min-width: 0; height: 38px; gap: 7px; padding: 0 8px; border: 0 !important;
+  border-radius: 5px !important; background: transparent !important; color: var(--settings-muted) !important;
+}
+html body [data-settings-surface] .th-opt[data-on="true"] { background: var(--settings-ink) !important; color: var(--settings-canvas) !important; box-shadow: none !important; }
+html body [data-settings-surface] .th-opt svg { width: 15px; height: 15px; }
+html body [data-settings-surface] .th-opt-label { font-size: 12px; font-weight: 500; color: inherit !important; }
+/* Subpages share restrained fields and compact, distinctly secondary actions. */
+html body [data-settings-surface] .gx-screen { padding: 0 24px; }
+html body [data-settings-surface] .gx-title { font-size: 26px; line-height: 1.25; margin: 16px 0 8px; }
+html body [data-settings-surface] .gx-sub { font-size: 13px; font-weight: 400 !important; margin-bottom: 28px; }
+html body [data-settings-surface] .gx-section-title { font-size: 14px; margin: 0 0 2px; }
+html body [data-settings-surface] .gx-content { gap: 20px; }
+html body [data-settings-surface] :is(.gx-pill, .amb-btn-gold) { min-height: 42px; border-radius: 8px !important; font-size: 13px; font-weight: 500; }
+html body [data-settings-surface] :is(.gx-hbtn, .ms-hbtn, .pep-icon-btn) { width: 40px; height: 40px; background: transparent !important; border: 0 !important; }
+html body [data-settings-surface] :is(.gx-input, .mem-search-input, .amb-input) { border-radius: 8px; font-size: 14px; }
+html body [data-settings-surface] .mem-card-foot { border-top: 1px solid var(--settings-line); padding-top: 10px; margin-top: 2px; }
+html body [data-settings-surface] .mem-act { background: transparent; border: 1px solid var(--settings-line); border-radius: 6px; padding: 7px 10px; font-weight: 500; }
+html body [data-settings-surface] .mem-content { font-weight: 400 !important; }
+@media (prefers-reduced-motion: reduce) { html body [data-settings-surface] [role="switch"], html body [data-settings-surface] [role="switch"] > span { transition: none !important; } }
+/* Existing home styles use important declarations in this layer; override there too. */
+@layer properties {
+  html body [data-settings-surface] [role="switch"] > span { translate: none !important; }
+  html body [data-settings-surface] .ms-root .ms-card {
+    background: transparent !important; border: 0 !important; border-radius: 0 !important;
+  }
+  html body [data-settings-surface] .ms-root .ms-profile-group { border-bottom: 1px solid var(--settings-line) !important; }
+  html body [data-settings-surface] .ms-root .ms-hbtn {
+    background: transparent !important; color: var(--settings-ink) !important;
+    -webkit-text-fill-color: currentColor !important; border: 0 !important;
+  }
+}

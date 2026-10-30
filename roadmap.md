@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Current request — pricing and settings
+- [ ] Refine settings home/subpage layout and buttons; repair consistent switch track/thumb states and verify toggling on mobile.
 - [x] Remove secondary dollar amounts whenever pricing and checkout show a local currency; Egypt and India pricing verified in the signed-in mobile browser.
 - [x] Review actual signed-in settings home and subpages on mobile and correct the monochrome presentation: remove colored preview buttons and danger actions, repair nested search/name fields and expired-avatar fallback, preserve light/dark selection. No account data or payments changed; 16 payment tests passed.
 - [x] Make the pricing Subscribe button black; confirmed in the actual pricing page, with working yearly selection.
