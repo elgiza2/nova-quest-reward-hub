@@ -41,3 +41,22 @@ html .play-checkout .play-method-row .payment-red{fill:var(--payment-red)!import
 html body .play-checkout.play-checkout .checkout-field>span{color:var(--checkout-muted)!important;-webkit-text-fill-color:var(--checkout-muted)!important;text-shadow:none!important;opacity:1!important}
 html body .play-checkout.play-checkout .checkout-input-wrap input{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important;color:var(--checkout-ink)!important;padding:0!important;height:50px!important}
 html body .play-checkout.play-checkout .payment-red{fill:var(--payment-red)!important;color:var(--payment-red)!important}html body .play-checkout.play-checkout .payment-yellow{fill:var(--payment-yellow)!important;color:var(--payment-yellow)!important}html body .play-checkout.play-checkout .payment-orange{fill:var(--payment-orange)!important;color:var(--payment-orange)!important}
+/* Floating glass sheet (overrides above) */
+:root{--checkout-surface:oklch(1 0 0 / .72);--checkout-field:oklch(1 0 0 / .55);--checkout-line:oklch(.5 .01 260 / .14);--checkout-selection:oklch(.55 .2 260 / .1);--checkout-overlay:oklch(.15 .01 260 / .22)}
+html.dark,html[data-theme=dark]{--checkout-surface:oklch(.22 .006 260 / .7);--checkout-field:oklch(.3 .006 260 / .5);--checkout-line:oklch(1 0 0 / .1);--checkout-selection:oklch(.72 .14 255 / .14)}
+.play-checkout-overlay{padding:12px 12px max(12px,env(safe-area-inset-bottom));align-items:flex-end;backdrop-filter:blur(3px)}
+.play-checkout{border-radius:28px!important;max-width:440px;border:1px solid oklch(1 0 0 / .5);backdrop-filter:blur(28px) saturate(170%);box-shadow:0 24px 70px oklch(0 0 0 / .22),inset 0 1px 0 oklch(1 0 0 / .6);font-family:inherit}
+html.dark .play-checkout{border-color:oklch(1 0 0 / .12);box-shadow:0 24px 70px oklch(0 0 0 / .5),inset 0 1px 0 oklch(1 0 0 / .08)}
+.play-grabber{display:block;width:38px;height:5px;border-radius:9px;background:var(--checkout-line);margin:10px auto 0}
+.play-checkout-brand{border-bottom:0;padding:12px 20px 4px;font-weight:600}
+.play-checkout-product{border-bottom:0;margin:6px 14px;padding:16px;border-radius:20px;background:var(--checkout-field)}
+.play-product-icon{border-radius:14px;background:linear-gradient(135deg,oklch(.62 .2 350),oklch(.6 .2 280))}
+html .play-checkout button.play-method-selected{margin:8px 14px 0;width:calc(100% - 28px);border-radius:20px;border:0!important;min-height:68px;padding:14px 16px}
+.play-method-icon{width:40px;height:40px;border-radius:12px;border:0;background:oklch(1 0 0);box-shadow:0 1px 4px oklch(0 0 0 / .1)}
+.play-group{margin:4px 14px 12px}.play-group-title{font-size:12px;font-weight:600;color:var(--checkout-muted);padding:6px 6px 8px}
+.play-group-list{border-radius:20px;overflow:hidden;background:var(--checkout-field)}.play-group-list li+li{border-top:1px solid var(--checkout-line)}
+html .play-checkout .play-group-list button.play-method-row{min-height:62px;padding:12px 16px;border-radius:0}
+.play-checkout-heading{padding:14px 20px 10px}
+.play-checkout-footer{padding:16px 20px max(20px,env(safe-area-inset-bottom))}
+html .play-checkout button.play-buy{height:52px;border-radius:18px;font-size:16px;font-weight:600}
+.play-checkout .payment-white{fill:oklch(1 0 0)}
