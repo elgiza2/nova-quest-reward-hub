@@ -80,3 +80,5 @@ html body .gp-sheet .payment-yellow,html body .play-checkout .payment-yellow{fil
 html body .gp-sheet,html body .play-checkout{background:var(--gp-bg)!important;border:0!important;border-radius:0;box-shadow:0 -2px 12px oklch(0 0 0 / .12)}
 html body .gp-sheet h2,html body .play-checkout h2{font-weight:400!important}
 @media(min-width:640px){html body .gp-sheet,html body .play-checkout{border-radius:12px}}
+html body div.gp-overlay>div.gp-sheet[role=dialog][aria-modal],html body div.play-checkout-overlay>section.play-checkout[role=dialog]{background:var(--gp-bg)!important;background-color:var(--gp-bg)!important}
+html body .gp-sheet h2{-webkit-text-stroke:0!important;font-synthesis:none}
