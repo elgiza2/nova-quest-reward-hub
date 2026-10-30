@@ -29,3 +29,4 @@
 - Central chat robot styling is scoped with ag-orb--chat and shared global animation tokens; other agent avatars keep their configured colors. Why: welcome-screen styling must not override personalized agents elsewhere.
 - Checkout purchase sheets and card entry share isolated payment-sheet CSS loaded after legacy styles in the active app stylesheet. Why: chat animations and legacy checkout rules must not override payment controls.
 - Full in-chat apps live in src/components/chat/genui/widgetApps.ts and mount from <div data-app=ID>; the prompt lists the IDs. Why: complete tools without the model writing app code each time.
+- Hosted-checkout payment methods per visitor country come only from src/lib/payments/countryMethods.ts (subscription-capable methods from the Dodo docs table). Why: one place to match the gateway's real per-country availability.
