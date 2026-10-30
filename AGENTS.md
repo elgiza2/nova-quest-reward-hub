@@ -27,3 +27,4 @@
 - Edge text routing falls back to the Lovable AI gateway after Cerebras and before the browser agent; the provider breaker also blocks 404 (archived) models. Why: dead/archived Cerebras models cost ~10s per turn.
 - Widget connect buttons (data-connect / megsy.connect) are handled by the host page via connectFromWidget, so apps connect in-chat. Why: the sandboxed drawing cannot open sign-in windows itself.
 - Central chat robot styling is scoped with ag-orb--chat and shared global animation tokens; other agent avatars keep their configured colors. Why: welcome-screen styling must not override personalized agents elsewhere.
+- Checkout purchase sheets and card entry share isolated payment-sheet CSS loaded after legacy styles in the active app stylesheet. Why: chat animations and legacy checkout rules must not override payment controls.

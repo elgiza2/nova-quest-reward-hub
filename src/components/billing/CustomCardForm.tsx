@@ -3,8 +3,7 @@ import { ArrowLeft, Check, Loader2, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BrandMark } from "./CardPreview";
 import { BrandIcon } from "./PaymentMethodMark";
-import artCoatUrl from "@/assets/pricing-coat.webp";
-const artCoat = { url: artCoatUrl };
+
 
 import {
   applePaySupported,
@@ -320,17 +319,14 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   }
 
   return (
-    <section
-      className="botanical-pricing megsy-checkout z-[120]"
+    <div className="play-checkout-overlay"><div className="absolute inset-0" onClick={busy ? undefined : onClose} /><section
+      role="dialog" aria-modal="true"
+      className="play-checkout play-card-page"
       data-wide={view === "verify" ? "true" : undefined}
       dir="ltr"
       aria-labelledby="checkout-title"
     >
-      <div aria-hidden="true" className="botanical-art">
-        <img src={artCoat.url} alt="" fetchPriority="high" width={768} height={1376} />
-      </div>
-      <div aria-hidden="true" className="botanical-scrim" />
-      <div className="botanical-content botanical-checkout-content">
+      <div>
         <header className="checkout-nav">
           <Button
             variant="ghost"
@@ -339,7 +335,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
             disabled={busy}
             aria-label="Back"
             title="Back"
-            className="megsy-back"
+            className="play-back"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
@@ -347,7 +343,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
 
         <div key={view} className="checkout-stage">
           <h1 id="checkout-title" className="checkout-title">
-            {result === "success" ? "Payment complete" : threeDsUrl ? "Confirm your payment" : "Payment"}
+            {result === "success" ? "Payment complete" : threeDsUrl ? "Confirm your payment" : "Add a card"}
           </h1>
 
           {threeDsUrl ? (
@@ -371,12 +367,13 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                   <p className="mt-2 max-w-full break-all font-mono text-xs text-muted-foreground">{orderId}</p>
                 )}
               </div>
-              <Button variant="ghost" type="button" className="megsy-pay-cta" onClick={onClose}>
+              <Button variant="ghost" type="button" className="play-buy" onClick={onClose}>
                 Continue
               </Button>
             </div>
           ) : (
             <div className="checkout-allinone">
+              <div className="play-card-networks"><BrandMark brand="visa" /><BrandMark brand="mastercard" /><span>Credit or debit card</span></div>
               <div className="checkout-methods" role="tablist" aria-label="Payment method" hidden>
                 {METHODS.filter((m) => m.id !== "apple_pay" || applePay).map((m) => (
                   <Button
@@ -454,14 +451,15 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                         />
                       </Field>
                     </div>
+                    <p className="checkout-note">Your payment is processed securely by the payment provider. Megsy only retains the last four digits.</p>
                     {error && <ErrorBox text={error} />}
-                    <Button variant="ghost" type="submit" data-plain disabled={busy} className="megsy-pay-cta">
+                    <Button variant="ghost" type="submit" data-plain disabled={busy} className="play-buy">
                       {busy ? (
                         <>
                           <Loader2 className="h-5 w-5 animate-spin" /> Processing…
                         </>
                       ) : (
-                        "Pay now"
+                        "Save and continue"
                       )}
                     </Button>
                   </form>
@@ -497,7 +495,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                         </Field>
                         <p className="checkout-note">We'll send a payment request to approve on your phone.</p>
                         {error && <ErrorBox text={error} />}
-                        <Button variant="ghost" type="submit" data-plain disabled={busy} className="megsy-pay-cta">
+                        <Button variant="ghost" type="submit" data-plain disabled={busy} className="play-buy">
                           {busy ? (
                             <>
                               <Loader2 className="h-5 w-5 animate-spin" /> Sending…
@@ -533,7 +531,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
           )}
         </div>
       </div>
-    </section>
+    </section></div>
   );
 }
 

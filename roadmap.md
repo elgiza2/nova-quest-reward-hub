@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current visual correction
+- [x] Restore multicolored particle styling across question options, steps and strategy-tree nodes.
+- [x] Match Google Play references for purchase and payment-method sheets, and redesign Add New Card consistently.
+- [x] Checked purchase → methods → card form on mobile and desktop without payment; widget question advances correctly with 11 particle layers. Routing test passed and build OK. Clarity's external tracking script emitted an error; no checkout or widget error observed. Live generated chat and payment processing were not tested in this visual correction.
+
 ## Oct 30 batch
 - [x] Store-style payment sheet (plan + price, method row, saved cards by last 4, add card opens card page); Vodafone Cash for Egypt only
 - [x] Pricing photo bundled + compressed (1.4MB → 59KB), lighter glass

@@ -1,0 +1,43 @@
+/* Payment surfaces are isolated from the animated chat/button theme. */
+:root{--checkout-surface:oklch(1 0 0);--checkout-ink:oklch(.24 .005 260);--checkout-muted:oklch(.5 .01 260);--checkout-line:oklch(.86 .005 260);--checkout-blue:oklch(.5 .2 260);--checkout-on-blue:oklch(1 0 0);--checkout-selection:oklch(.9 .05 240);--checkout-overlay:oklch(.1 0 0 / .6);--checkout-field:oklch(.98 .003 260);--checkout-shadow:0 16px 60px oklch(0 0 0 / .2)}
+html.dark,html[data-theme=dark]{--checkout-surface:oklch(.2 .006 260);--checkout-ink:oklch(.96 0 0);--checkout-muted:oklch(.74 .01 260);--checkout-line:oklch(.38 .008 260);--checkout-blue:oklch(.72 .14 255);--checkout-on-blue:oklch(.18 .02 260);--checkout-selection:oklch(.3 .055 250);--checkout-field:oklch(.24 .006 260)}
+.play-checkout-overlay{position:fixed;inset:0;z-index:120;display:flex;align-items:flex-end;justify-content:center;background:var(--checkout-overlay)}
+.play-checkout{position:relative;width:100%;max-width:480px;max-height:calc(100dvh - 24px);overflow:auto;background:var(--checkout-surface);color:var(--checkout-ink);border-radius:0;box-shadow:var(--checkout-shadow);font-family:Roboto,"Segoe UI",Tahoma,sans-serif;letter-spacing:0}
+.play-checkout-heading{display:flex;align-items:center;gap:14px;padding:22px 24px 18px;font-size:18px;font-weight:500}
+.play-checkout-brand{padding:20px 24px 14px;border-bottom:1px solid var(--checkout-line);font-size:17px;font-weight:500}
+.play-checkout-product{display:flex;align-items:flex-start;gap:16px;padding:26px 24px;border-bottom:1px solid var(--checkout-line)}
+.play-checkout-product h2{font-size:18px;font-weight:500;line-height:1.5}.play-checkout-product p{font-size:12px;color:var(--checkout-muted);margin-top:4px}.play-checkout-price{font-size:16px;white-space:nowrap;padding-top:3px}
+.play-product-icon{display:grid;place-items:center;width:44px;height:44px;flex-shrink:0;border-radius:8px;background:var(--checkout-blue);color:var(--checkout-on-blue);font-size:24px;font-weight:600}
+html .play-checkout button{background:none!important;background-image:none!important;color:var(--checkout-ink)!important;box-shadow:none!important;border:0!important;letter-spacing:0;transform:none!important;text-transform:none}
+html .play-checkout button::before,html .play-checkout button::after{display:none!important}
+html .play-checkout button .fold,html .play-checkout button .points_wrapper{display:none!important}
+html .play-checkout button.play-method-row{width:100%;height:auto;min-height:76px;display:flex;justify-content:flex-start;gap:18px;padding:20px 24px;text-align:start;border-radius:0;font-size:16px;font-weight:400;white-space:normal}
+html .play-checkout button.play-method-row:hover{background:var(--checkout-field)!important}
+html .play-checkout button.play-method-selected{background:var(--checkout-selection)!important;border-bottom:1px solid var(--checkout-line)!important;min-height:84px}
+.play-method-label{flex:1;min-width:0}.play-method-label small{display:block;font-size:12px;color:var(--checkout-muted);margin-top:4px}.play-method-icon{width:38px;height:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--checkout-line);border-radius:2px;background:var(--checkout-surface)}
+.play-method-check{display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:var(--checkout-blue);color:var(--checkout-on-blue);flex-shrink:0}
+.play-method-arrow{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--checkout-surface)}
+.play-checkout-add{margin-top:14px;padding:22px 0 10px;border-top:1px solid var(--checkout-line)}.play-checkout-add>p{padding:0 24px 6px;font-size:14px;color:var(--checkout-muted)}
+.play-checkout-footer{padding:20px 24px max(24px,env(safe-area-inset-bottom))}.play-checkout-footer>p{font-size:12px;line-height:1.7;color:var(--checkout-muted);margin:0 0 20px}
+html .play-checkout button.play-buy{width:100%;height:44px;padding:10px 20px;border-radius:999px;background:var(--checkout-blue)!important;color:var(--checkout-on-blue)!important;font-size:14px;font-weight:500;flex-shrink:0}
+html .play-checkout button.play-buy *{color:inherit!important;-webkit-text-fill-color:inherit!important}
+html .play-checkout button.play-back{padding:0;width:28px;height:28px;border-radius:50%}
+.play-card-page{padding-bottom:max(20px,env(safe-area-inset-bottom))}.play-card-page .checkout-nav{padding:20px 24px 0;display:flex}.play-card-page .checkout-stage{padding:20px 24px 8px;display:flex;flex-direction:column}.play-card-page .checkout-title{font-size:22px;font-weight:500;line-height:1.4;margin-bottom:20px;color:var(--checkout-ink)}
+.play-card-page .checkout-allinone,.play-card-page .checkout-panel{width:100%}.play-card-page .checkout-card-form{display:flex;flex-direction:column;gap:18px}.play-card-networks{display:flex;gap:10px;align-items:center;margin-bottom:24px;color:var(--checkout-muted);font-size:12px}
+.play-card-page .checkout-field{display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:500;color:var(--checkout-muted)}.play-card-page .checkout-input-wrap{display:flex;align-items:center;min-height:52px;border:1px solid var(--checkout-line);border-radius:4px;background:var(--checkout-field);padding:0 12px;box-shadow:none;backdrop-filter:none}.play-card-page .checkout-input-wrap:focus-within{border-color:var(--checkout-blue);outline:1px solid var(--checkout-blue)}.play-card-page input{width:100%;min-width:0;height:50px;border:0;outline:0;background:transparent;color:var(--checkout-ink);font-size:16px;box-shadow:none;padding:0;border-radius:0}.play-card-page .checkout-note{font-size:12px;line-height:1.7;color:var(--checkout-muted)}.play-card-page .checkout-error{color:var(--destructive);font-size:13px;line-height:1.6}.play-card-page .checkout-frame iframe{width:100%;height:55dvh;border:0}.play-card-page .checkout-subtitle{color:var(--checkout-ink)}
+@media(min-width:640px){.play-checkout-overlay{align-items:center}.play-checkout{border-radius:8px}.play-card-page{max-width:480px}}
+@media(prefers-reduced-motion:reduce){.play-checkout *{transition:none!important;animation:none!important}}html .play-checkout .payment-visa{width:32px;height:14px;flex-shrink:0;color:var(--checkout-blue)}
+html .play-checkout .play-card-networks svg{width:34px;height:22px}
+html .play-checkout h1,html .play-checkout h2,html .play-checkout p,html .play-checkout span{letter-spacing:0;text-shadow:none;-webkit-text-fill-color:currentColor}
+html .play-card-page .checkout-title{text-align:start;color:var(--checkout-ink);font-size:22px;font-weight:500;text-shadow:none;filter:none}
+html .play-card-page .checkout-input-wrap{box-shadow:none;backdrop-filter:none;background:var(--checkout-field);border-radius:4px}
+.play-checkout{--payment-red:oklch(.59 .24 27);--payment-yellow:oklch(.77 .17 70);--payment-orange:oklch(.7 .21 42);--payment-green:oklch(.64 .16 145);--payment-logo-surface:oklch(1 0 0)}
+html .play-card-page .checkout-stage{animation:none;margin-top:0;filter:none;opacity:1}
+html .play-card-page .checkout-title{color:var(--checkout-ink)!important;-webkit-text-fill-color:var(--checkout-ink)!important}
+html .play-card-page .checkout-allinone{margin-top:0;gap:0}
+html .play-card-page .checkout-field>span{color:var(--checkout-muted)!important;text-shadow:none;margin:0;font-weight:500}
+html .play-card-page .checkout-input-wrap input{color:var(--checkout-ink)!important;-webkit-text-fill-color:var(--checkout-ink)!important;padding:0}
+html .play-checkout .play-method-row .payment-red{fill:var(--payment-red)!important}html .play-checkout .payment-yellow{fill:var(--payment-yellow)!important}html .play-checkout .payment-orange{fill:var(--payment-orange)!important}
+html body .play-checkout.play-checkout .checkout-field>span{color:var(--checkout-muted)!important;-webkit-text-fill-color:var(--checkout-muted)!important;text-shadow:none!important;opacity:1!important}
+html body .play-checkout.play-checkout .checkout-input-wrap input{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important;color:var(--checkout-ink)!important;padding:0!important;height:50px!important}
+html body .play-checkout.play-checkout .payment-red{fill:var(--payment-red)!important;color:var(--payment-red)!important}html body .play-checkout.play-checkout .payment-yellow{fill:var(--payment-yellow)!important;color:var(--payment-yellow)!important}html body .play-checkout.play-checkout .payment-orange{fill:var(--payment-orange)!important;color:var(--payment-orange)!important}
