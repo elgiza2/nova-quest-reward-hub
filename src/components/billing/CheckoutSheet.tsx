@@ -7,14 +7,16 @@
  */
 import { useEffect, useState } from "react";
 import { m as motion } from "framer-motion";
-import { ArrowLeft, Check, ChevronLeft, CreditCard, Globe2, Info, Loader2, Smartphone } from "lucide-react";
+import { ArrowLeft, Check, ChevronLeft, CreditCard, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BrandMark } from "./CardPreview";
 import { BRAND_MARKS, type BrandSlug } from "@/lib/payments/brandMarks";
 import { getDisplayPrice, getPlan, type PlanTier } from "@/data/pricingData";
 import { useUserLang } from "@/lib/authI18n";
+import MegsyStar from "@/components/branding/MegsyStar";
+import { localMethodsFor, type LocalMethod, type LocalMethodId } from "@/lib/payments/countryMethods";
 
-export type GlobalMethodId = "apple_pay" | "google_pay" | "more";
+export type GlobalMethodId = LocalMethodId;
 
 export type SheetMethod =
   | { kind: "saved"; id: string; brand: "visa" | "mastercard" | "card"; last4: string }
@@ -28,13 +30,14 @@ type Props = {
   savedCards: Array<Extract<SheetMethod, { kind: "saved" }>>;
   showVodafone: boolean;
   showApplePay: boolean;
+  /** Visitor country (ISO alpha-2); picks the local hosted-checkout methods. */
+  country?: string | null;
   selected: SheetMethod;
   onSelect: (m: SheetMethod) => void;
   onBuy: () => void;
   onClose: () => void;
   busy?: boolean;
   note?: string | null;
-  email?: string | null;
   /** Card number / name / expiry / CVV fields for the add-card page. */
   cardFields?: React.ReactNode;
   /** Extra inputs under the method row (e.g. wallet number). */
@@ -74,26 +77,32 @@ function VodafoneMark() {
   );
 }
 
-function MethodIcon({ m }: { m: SheetMethod }) {
+function LocalLogo({ m }: { m: LocalMethod }) {
+  if (m.logo.kind === "brand") return <Simple slug={m.logo.slug} mono={m.logo.slug === "applepay" || m.logo.slug === "klarna"} />;
+  return (
+    <span className="gp-word" style={{ color: m.logo.color, background: m.logo.bg }}>{m.logo.text}</span>
+  );
+}
+
+function MethodIcon({ m, locals }: { m: SheetMethod; locals: LocalMethod[] }) {
   let inner: React.ReactNode = <CreditCard className="h-4 w-4" strokeWidth={1.8} />;
   if (m.kind === "saved" && m.brand !== "card") inner = <BrandMark brand={m.brand} />;
   else if (m.kind === "vodafone") inner = <VodafoneMark />;
-  else if (m.kind === "global" && m.id === "apple_pay") inner = <Simple slug="applepay" mono />;
-  else if (m.kind === "global" && m.id === "google_pay") inner = <Simple slug="googlepay" />;
-  else if (m.kind === "global") inner = <Globe2 className="h-4 w-4" strokeWidth={1.8} />;
+  else if (m.kind === "global") {
+    const local = locals.find((l) => l.id === m.id);
+    if (local) inner = <LocalLogo m={local} />;
+  }
   return <span className="gp-ico" data-kind={m.kind === "global" ? m.id : m.kind}>{inner}</span>;
 }
 
 /** Row of accepted-method logos shown under the buy button. */
-function AcceptedStrip({ vodafone, apple }: { vodafone: boolean; apple: boolean }) {
+function AcceptedStrip({ vodafone, locals }: { vodafone: boolean; locals: LocalMethod[] }) {
   return (
     <div className="gp-accepted" dir="ltr" aria-label="Accepted payment methods">
       <span className="gp-chip"><BrandMark brand="visa" /></span>
       <span className="gp-chip"><BrandMark brand="mastercard" /></span>
       {vodafone && <span className="gp-chip"><VodafoneMark /></span>}
-      {apple && <span className="gp-chip"><Simple slug="applepay" mono /></span>}
-      <span className="gp-chip"><Simple slug="googlepay" /></span>
-      <span className="gp-chip"><Simple slug="paypal" /></span>
+      {locals.map((l) => <span key={l.id} className="gp-chip"><LocalLogo m={l} /></span>)}
     </div>
   );
 }
@@ -101,13 +110,14 @@ function AcceptedStrip({ vodafone, apple }: { vodafone: boolean; apple: boolean 
 type View = "main" | "list" | "add";
 
 export default function CheckoutSheet(props: Props) {
-  const { tier, interval, savedCards, showVodafone, showApplePay, selected, onSelect, onBuy, onClose, busy, note, email, cardFields, children } =
+  const { tier, interval, savedCards, showVodafone, showApplePay, country, selected, onSelect, onBuy, onClose, busy, note, cardFields, children } =
     props;
   const ar = useUserLang().startsWith("ar");
   const t = (en: string, a: string) => (ar ? a : en);
   const [view, setView] = useState<View>("main");
   const plan = getPlan(tier);
   const price = plan ? getDisplayPrice(plan, interval === "yearly") : null;
+  const locals = localMethodsFor(country).filter((l) => !l.appleOnly || showApplePay);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && (view === "main" ? onClose() : setView("main"));
@@ -121,18 +131,14 @@ export default function CheckoutSheet(props: Props) {
       : m.kind === "vodafone"
         ? "Vodafone Cash"
         : m.kind === "global"
-          ? m.id === "apple_pay"
-            ? "Apple Pay"
-            : m.id === "google_pay"
-              ? "Google Pay"
-              : t("Other payment methods", "طرق دفع أخرى")
+          ? locals.find((l) => l.id === m.id)?.label ?? m.id
           : t("Add card", "إضافة بطاقة");
 
   const sub = (m: SheetMethod) =>
     m.kind === "vodafone"
       ? t("Approve the payment on your phone", "هتأكد الدفع من موبايلك")
-      : m.kind === "global" && m.id === "more"
-        ? t("PayPal, Klarna, local banks and more", "PayPal و Klarna وبنوك محلية وغيرها")
+      : m.kind === "global"
+        ? (() => { const h = locals.find((l) => l.id === m.id)?.hint; return h ? t(h.en, h.ar) : null; })()
         : m.kind === "new_card"
           ? t("Visa or Mastercard", "فيزا أو ماستركارد")
           : null;
@@ -145,9 +151,7 @@ export default function CheckoutSheet(props: Props) {
   const methods: SheetMethod[] = [
     ...savedCards,
     ...(showVodafone ? [{ kind: "vodafone" } as const] : []),
-    ...(showApplePay ? [{ kind: "global", id: "apple_pay" } as const] : []),
-    { kind: "global", id: "google_pay" } as const,
-    { kind: "global", id: "more" } as const,
+    ...locals.map((l) => ({ kind: "global", id: l.id }) as const),
   ];
   const key = (m: SheetMethod) => (m.kind === "saved" ? m.id : m.kind === "global" ? m.id : m.kind);
   const buyLabel = t("Subscribe", "اشترك");
@@ -162,9 +166,8 @@ export default function CheckoutSheet(props: Props) {
         <div role="dialog" aria-modal="true" aria-label={t("Checkout", "الدفع")} className="contents">
         {view === "main" && (
           <>
-            <div className="gp-brand"><span>Megsy AI</span></div>
             <div className="gp-product">
-              <span className="gp-app-icon" aria-hidden="true">M</span>
+              <span className="gp-app-icon" aria-hidden="true"><MegsyStar className="h-9 w-9" /></span>
               <div className="gp-product-name">
                 <h2>{plan?.name ?? "Megsy"}</h2>
                 <p>{interval === "yearly" ? t("Yearly subscription", "اشتراك سنوي") : t("Monthly subscription", "اشتراك شهري")}</p>
@@ -172,12 +175,11 @@ export default function CheckoutSheet(props: Props) {
               {price && <span className="gp-price" dir="ltr">${price.price}</span>}
             </div>
             <Button variant="ghost" className="gp-selected" onClick={() => setView("list")} disabled={busy}>
-              <MethodIcon m={selected} />
+              <MethodIcon m={selected} locals={locals} />
               <span className="gp-label" dir="auto">
                 {label(selected)}
                 <small>{selected.kind === "new_card" ? t("Tap to choose how to pay", "اختار طريقة الدفع") : interval === "yearly" ? t("Renews every year · cancel anytime", "يتجدد كل سنة · تقدر تلغي في أي وقت") : t("Renews every month · cancel anytime", "يتجدد كل شهر · تقدر تلغي في أي وقت")}</small>
               </span>
-              <Info className="gp-info h-5 w-5" aria-hidden="true" />
               <span className="gp-chev"><ChevronLeft className="h-4 w-4 ltr:rotate-180" /></span>
             </Button>
             <div className="gp-foot">
@@ -190,7 +192,7 @@ export default function CheckoutSheet(props: Props) {
               <Button variant="ghost" className="gp-buy" onClick={() => (selected.kind === "new_card" ? setView("add") : onBuy())} disabled={busy}>
                 {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : buyLabel}
               </Button>
-              <AcceptedStrip vodafone={showVodafone} apple={showApplePay} />
+              <AcceptedStrip vodafone={showVodafone} locals={locals} />
             </div>
           </>
         )}
@@ -203,18 +205,14 @@ export default function CheckoutSheet(props: Props) {
               </Button>
               <div>
                 <h2>{t("Payment methods", "طرق الدفع")}</h2>
-                {email && <p dir="ltr">{email}</p>}
               </div>
             </div>
             <ul className="gp-list">
               {methods.map((m) => (
                 <li key={key(m)}>
                   <Button variant="ghost" className="gp-row" onClick={() => { onSelect(m); setView("main"); }}>
-                    <MethodIcon m={m} />
+                    <MethodIcon m={m} locals={locals} />
                     <span className="gp-label" dir="auto">{label(m)}{sub(m) && <small>{sub(m)}</small>}</span>
-                    {m.kind === "global" && m.id === "more" && !same(m, selected) && (
-                      <span className="gp-brands" dir="ltr"><span className="gp-chip"><Simple slug="paypal" /></span><span className="gp-chip"><Simple slug="klarna" mono /></span></span>
-                    )}
                     {same(m, selected) && <span className="gp-check"><Check className="h-3.5 w-3.5" strokeWidth={3} /></span>}
                   </Button>
                 </li>
@@ -238,7 +236,6 @@ export default function CheckoutSheet(props: Props) {
               </Button>
               <div>
                 <h2>{t("Add card", "إضافة بطاقة")}</h2>
-                {email && <p dir="ltr">{email}</p>}
               </div>
             </div>
             <div className="gp-add-brands" dir="ltr"><span className="gp-chip"><BrandMark brand="visa" /></span><span className="gp-chip"><BrandMark brand="mastercard" /></span></div>
