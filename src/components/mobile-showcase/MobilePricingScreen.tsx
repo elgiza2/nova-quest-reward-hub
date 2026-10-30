@@ -39,8 +39,8 @@ export default function MobilePricingScreen({ isYearly, onToggleYearly, onSubscr
   const monthly = getDisplayPrice(pro, false);
   const yearly = getDisplayPrice(pro, true);
   const benefits = isAr
-    ? ["١٬٠٠٠ رصيد Megsy كل شهر", "بحث وتصفح وبرمجة مع وكيلك", "إنشاء الصور والفيديو داخل الشات"]
-    : ["1,000 Megsy Credits every month", "Research, browse & code with your agent", "Create images & video in chat"];
+    ? ["١٬٠٠٠ رصيد Megsy كل شهر", "بحث على الويب، برمجة وتحليل ملفات", "صور وفيديو وأدوات تفاعلية داخل الشات"]
+    : ["1,000 Megsy Credits every month", "Web research, coding & file analysis", "Images, video & interactive tools in chat"];
   const shown = (l: LocalPrice | null, usd: string) => (l ? `${l.approx ? "≈ " : ""}${l.text}` : usd);
   const options = [
     { yearly: false, label: isAr ? "شهري" : "Monthly", price: shown(localMonthly, `$${monthly.price.toFixed(2)}`), usd: localMonthly ? `$${monthly.price.toFixed(2)}` : null, note: isAr ? "للشهر الأول" : "First month", detail: isAr ? `ثم ${shown(localThen, `$${pro.monthlyPrice}`)} / شهر` : `Then ${shown(localThen, `$${pro.monthlyPrice}`)} / month` },
@@ -59,7 +59,7 @@ export default function MobilePricingScreen({ isYearly, onToggleYearly, onSubscr
         </header>
         <div className="botanical-heading">
           <h1 dir="ltr">megsy <span>pro</span></h1>
-          <p>{isAr ? "إمكانيات أكتر. أفكار بلا حدود." : "Unlock more possibilities with"}<br />{isAr ? "وكيلك الذكي، في مكان واحد." : "your personal AI agent."}</p>
+          <p>{isAr ? "من أول سؤال لحد إنجاز شغلك." : "From your first question to finished work."}<br />{isAr ? "ابحث، حلّل وابتكر مع وكيلك الذكي." : "Research, analyse & create with your AI agent."}</p>
         </div>
         <div className="botanical-details">
           <ul className="botanical-benefits">

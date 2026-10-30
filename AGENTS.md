@@ -30,3 +30,4 @@
 - Checkout purchase sheets and card entry share isolated payment-sheet CSS loaded after legacy styles in the active app stylesheet. Why: chat animations and legacy checkout rules must not override payment controls.
 - Full in-chat apps live in src/components/chat/genui/widgetApps.ts and mount from <div data-app=ID>; the prompt lists the IDs. Why: complete tools without the model writing app code each time.
 - Hosted-checkout payment methods per visitor country come only from src/lib/payments/countryMethods.ts (subscription-capable methods from the Dodo docs table). Why: one place to match the gateway's real per-country availability.
+- Settings presentation is scoped by SettingsShell's data-settings-surface and a final shared stylesheet; retain legacy settings tokens for existing subpages. Why: all settings share one theme without changing chat drawings or payment sheets.

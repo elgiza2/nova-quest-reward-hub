@@ -260,7 +260,7 @@ export const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "Is my payment secure? Which payment methods do you accept?",
-    a: "All Megsy subscription payments are processed through Kashier. Your card details never touch our servers. Kashier supports card and mobile-wallet payment methods available in your checkout.",
+    a: "Pay by Visa or Mastercard, or choose a wallet or local payment method available for your country. Vodafone Cash is available in Egypt only. Available methods and the final amount are shown before you confirm payment.",
   },
   {
     q: "Do you offer team or enterprise plans?",

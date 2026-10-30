@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current request — pricing and settings
+- [x] Make the pricing Subscribe button black; confirmed in the actual pricing page, with working yearly selection.
+- [x] Reviewed product capabilities and revised pricing summary and benefits; corrected the payment FAQ to reflect country-specific methods without gateway branding.
+- [x] Replace glass across settings routes with opaque monochrome tokens and a settings-only final style layer; checked light/dark presentation at mobile and desktop sizes, no runtime errors, 16 payment tests passed and build OK.
+- [ ] Account-specific settings end-to-end review: external unmanaged authentication redirects to sign-in; only presentation was verified, not logged-in account controls.
+
 ## Current visual correction
 - [x] Restore multicolored particle styling across question options, steps and strategy-tree nodes.
 - [x] Match Google Play references for purchase and payment-method sheets, and redesign Add New Card consistently.
