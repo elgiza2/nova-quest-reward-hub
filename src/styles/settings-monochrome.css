@@ -122,3 +122,11 @@ html body [data-settings-surface] .th-pv[data-mode="dark"] :is(.th-pv-avatar, .t
 html body [data-settings-surface] .th-pv-cta { background: var(--settings-preview-dark); }
 html body [data-settings-surface] .th-pv[data-mode="dark"] .th-pv-cta { background: var(--settings-preview-light); }
 html body [data-settings-surface] .ms-avatar-fallback { background: var(--settings-ink); color: var(--settings-canvas); }
+html body [data-settings-surface] :is(.gx-sub, .gx-section-note, .gx-row-hint, .mem-state, .mem-when, .pep-hint, .text-muted-foreground) {
+  color: var(--settings-muted) !important; -webkit-text-fill-color: currentColor !important;
+}
+html body [data-settings-surface] .mem-content { color: var(--settings-ink) !important; -webkit-text-fill-color: currentColor !important; }
+html body [data-settings-surface] .gx-actions .gx-pill:first-child {
+  background: var(--settings-surface) !important; color: var(--settings-ink) !important;
+  border: 1px solid var(--settings-line) !important;
+}
