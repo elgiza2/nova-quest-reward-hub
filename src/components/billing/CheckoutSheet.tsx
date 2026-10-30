@@ -69,7 +69,7 @@ function Simple({ slug, mono }: { slug: BrandSlug; mono?: boolean }) {
   );
 }
 
-function VodafoneMark() {
+export function VodafoneMark() {
   return (
     <svg viewBox="0 0 24 24" className="gp-logo gp-logo--vodafone" role="img" aria-label="Vodafone Cash">
       <circle cx="12" cy="12" r="12" fill="#E60000" />

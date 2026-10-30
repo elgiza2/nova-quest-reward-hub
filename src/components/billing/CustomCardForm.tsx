@@ -261,8 +261,8 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
     const buy = () => {
       setError(null);
       if (picked.kind === "vodafone") {
-        if (phone.length < 10) {
-          setError("Enter your Vodafone Cash number.");
+        if (!VODAFONE_RE.test(phone)) {
+          setError("Enter the full 11-digit Vodafone Cash number, starting with 01.");
           return;
         }
         void submitWallet({ preventDefault() {} } as React.FormEvent);
@@ -327,22 +327,26 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
             <div className="mb-4 flex items-center gap-3 rounded-xl bg-muted/50 p-3 text-[13.5px]">
               <Loader2 className="h-5 w-5 shrink-0 animate-spin" />
               <span>
-                Approve the request on <span dir="ltr">+20 {phone}</span> (Ana Vodafone or *9#).
+                Approve the request on <span dir="ltr">+2 {phone}</span> (Ana Vodafone or *9#).
               </span>
             </div>
           ) : (
-            <label className="mb-4 flex h-12 items-center gap-2 rounded-xl border border-border px-3">
-              <span className="text-muted-foreground" dir="ltr">+20</span>
-              <input
-                inputMode="tel"
-                dir="ltr"
-                aria-label="Vodafone Cash wallet number"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))}
-                placeholder="10 0000 0000"
-                className="h-full flex-1 bg-transparent text-[15px] outline-none"
-              />
-            </label>
+            <>
+              <label className="gp-wallet" dir="ltr">
+                <span className="gp-wallet-cc"><VodafoneMark />+2</span>
+                <input
+                  inputMode="numeric"
+                  autoComplete="tel-national"
+                  aria-label="Vodafone Cash number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))}
+                  placeholder="01XXXXXXXXX"
+                  maxLength={11}
+                />
+                {VODAFONE_RE.test(phone) && <Check className="gp-wallet-ok h-4 w-4" strokeWidth={3} />}
+              </label>
+              <p className="gp-wallet-help">{phone.length}/11</p>
+            </>
           ))}
       </CheckoutSheet>
     );
@@ -502,7 +506,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                           Approve the payment on your phone
                         </h2>
                         <p className="checkout-note mt-2">
-                          Request sent to <span dir="ltr">+20 {phone}</span>. Open Ana Vodafone or dial *9#,
+                          Request sent to <span dir="ltr">+2 {phone}</span>. Open Ana Vodafone or dial *9#,
                           then enter your PIN.
                         </p>
                         <Button variant="ghost" type="button" onClick={cancelWallet} className="megsy-pay-quiet mt-4">
@@ -512,7 +516,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                     ) : (
                       <>
                         <Field label="Wallet number">
-                          <span className="wallet-prefix">+20</span>
+                          <span className="wallet-prefix">+2</span>
                           <input
                             inputMode="tel"
                             autoComplete="tel-national"
