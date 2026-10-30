@@ -2600,7 +2600,7 @@ const ChatPage = () => {
             data-plus-menu
             onClick={(e) => e.stopPropagation()}
             className="fixed inset-x-4 z-[60] rounded-[34px] bg-background p-4 md:hidden"
-            style={{ boxShadow: "none", border: 0, bottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)" }}
+            style={{ boxShadow: "none", border: 0, borderRadius: 34, bottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)" }}
           >
             {renderPlusContent()}
           </motion.div>

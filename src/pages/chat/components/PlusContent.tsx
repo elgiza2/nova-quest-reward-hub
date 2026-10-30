@@ -146,6 +146,7 @@ const PlusMain = (p: PlusContentProps) => {
             data-no-neo
             type="button"
             onClick={t.onClick}
+            style={{ border: 0, borderRadius: 24 }}
             className="flex aspect-[1.12] flex-col items-center justify-center gap-2 rounded-[24px] border-0 bg-muted/60 text-foreground shadow-none transition-[background-color,transform] duration-150 hover:bg-muted active:scale-[0.96]"
           >
             <t.Icon className="h-[22px] w-[22px]" strokeWidth={1.6} />
