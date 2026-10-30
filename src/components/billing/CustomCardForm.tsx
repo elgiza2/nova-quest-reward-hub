@@ -262,9 +262,12 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
         void startRedirect(picked.id === "more" ? null : picked.id, names[picked.id]);
         return;
       }
-      // New card or a saved card: the secure card form (saved cards renew automatically;
-      // a new purchase still needs the card confirmed with the bank).
+      // New card: fields are inline in the sheet. Saved card: confirm with the bank on the card page.
       setMethod("visa");
+      if (picked.kind === "new_card") {
+        void submitCard({ preventDefault() {} } as React.FormEvent);
+        return;
+      }
       setSheet(false);
     };
     return (
@@ -285,6 +288,30 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
         busy={busy || !!startingMethod}
         note={error ?? methodNote}
       >
+        {picked.kind === "new_card" && (
+          <div className="pay-card-fields" dir="ltr">
+            <div className="pay-card-networks"><BrandMark brand="visa" /><BrandMark brand="mastercard" /></div>
+            <Field label="Card number">
+              <input inputMode="numeric" autoComplete="cc-number" value={formatCardNumber(number)}
+                onChange={(e) => setNumber(e.target.value)} placeholder="1234 5678 9012 3456" />
+            </Field>
+            <Field label="Name on card">
+              <input autoComplete="cc-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" />
+            </Field>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Expiry">
+                <input inputMode="numeric" autoComplete="cc-exp"
+                  value={month ? `${month}${month.length === 2 ? " / " : ""}${year}` : ""}
+                  onChange={(e) => { const d = e.target.value.replace(/\D/g, "").slice(0, 4); setMonth(d.slice(0, 2)); setYear(d.slice(2)); }}
+                  placeholder="MM / YY" />
+              </Field>
+              <Field label="CVV">
+                <input type="password" inputMode="numeric" autoComplete="cc-csc" value={cvv}
+                  onChange={(e) => setCvv(e.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="•••" />
+              </Field>
+            </div>
+          </div>
+        )}
         {picked.kind === "vodafone" &&
           (walletWaiting ? (
             <div className="mb-4 flex items-center gap-3 rounded-xl bg-muted/50 p-3 text-[13.5px]">
