@@ -77,3 +77,6 @@ html body .play-checkout button.play-back{padding:0;width:40px;height:40px;borde
 html body .gp-sheet .payment-red,html body .play-checkout .payment-red{fill:var(--payment-red)!important}html body .gp-sheet .payment-white,html body .play-checkout .payment-white{fill:oklch(1 0 0)!important}
 html body .gp-sheet .payment-yellow,html body .play-checkout .payment-yellow{fill:var(--payment-yellow)!important}html body .gp-sheet .payment-orange,html body .play-checkout .payment-orange{fill:var(--payment-orange)!important}
 @media(prefers-reduced-motion:reduce){.gp-sheet *,.play-checkout *{animation:none!important;transition:none!important}}
+html body .gp-sheet,html body .play-checkout{background:var(--gp-bg)!important;border:0!important;border-radius:0;box-shadow:0 -2px 12px oklch(0 0 0 / .12)}
+html body .gp-sheet h2,html body .play-checkout h2{font-weight:400!important}
+@media(min-width:640px){html body .gp-sheet,html body .play-checkout{border-radius:12px}}
