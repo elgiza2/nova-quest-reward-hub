@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SplatRouteImport } from './routes/$'
+import { Route as DevPayRouteImport } from './routes/dev-pay'
 import { Route as ApiAnythingRouteImport } from './routes/api/anything'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiClerkRouteImport } from './routes/api/clerk'
@@ -39,6 +40,11 @@ const IndexRoute = IndexRouteImport.update({
 const SplatRoute = SplatRouteImport.update({
   id: '/$',
   path: '/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevPayRoute = DevPayRouteImport.update({
+  id: '/dev-pay',
+  path: '/dev-pay',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAnythingRoute = ApiAnythingRouteImport.update({
@@ -143,6 +149,7 @@ const ApiPublicMediaRunIdIndexRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/dev-pay': typeof DevPayRoute
   '/api/anything': typeof ApiAnythingRoute
   '/api/chat': typeof ApiChatRoute
   '/api/clerk': typeof ApiClerkRoute
@@ -166,6 +173,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/dev-pay': typeof DevPayRoute
   '/api/anything': typeof ApiAnythingRoute
   '/api/chat': typeof ApiChatRoute
   '/api/clerk': typeof ApiClerkRoute
@@ -190,6 +198,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/dev-pay': typeof DevPayRoute
   '/api/anything': typeof ApiAnythingRoute
   '/api/chat': typeof ApiChatRoute
   '/api/clerk': typeof ApiClerkRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$'
+    | '/dev-pay'
     | '/api/anything'
     | '/api/chat'
     | '/api/clerk'
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$'
+    | '/dev-pay'
     | '/api/anything'
     | '/api/chat'
     | '/api/clerk'
@@ -261,6 +272,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/$'
+    | '/dev-pay'
     | '/api/anything'
     | '/api/chat'
     | '/api/clerk'
@@ -285,6 +297,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
+  DevPayRoute: typeof DevPayRoute
   ApiAnythingRoute: typeof ApiAnythingRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiClerkRoute: typeof ApiClerkRoute
@@ -320,6 +333,13 @@ declare module '@tanstack/react-router' {
       path: '/$'
       fullPath: '/$'
       preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dev-pay': {
+      id: '/dev-pay'
+      path: '/dev-pay'
+      fullPath: '/dev-pay'
+      preLoaderRoute: typeof DevPayRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/anything': {
@@ -461,6 +481,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
+  DevPayRoute: DevPayRoute,
   ApiAnythingRoute: ApiAnythingRoute,
   ApiChatRoute: ApiChatRoute,
   ApiClerkRoute: ApiClerkRoute,
