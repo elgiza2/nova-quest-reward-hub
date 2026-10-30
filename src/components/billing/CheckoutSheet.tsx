@@ -5,7 +5,7 @@
  */
 import { useEffect, useState } from "react";
 import { m as motion } from "framer-motion";
-import { ArrowRight, Check, ChevronLeft, CreditCard, Loader2, Smartphone } from "lucide-react";
+import { ArrowRight, Check, ChevronLeft, CreditCard, Loader2, Smartphone, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BrandMark } from "./CardPreview";
 import { getDisplayPrice, getPlan, type PlanTier } from "@/data/pricingData";
@@ -47,7 +47,7 @@ export function brandOf(masked: string | null | undefined): "visa" | "mastercard
 
 function MethodIcon({ m }: { m: SheetMethod }) {
   const box =
-    "flex h-9 w-12 shrink-0 items-center justify-center rounded-md border border-border bg-card";
+    "play-method-icon";
   if (m.kind === "saved" && m.brand !== "card")
     return (
       <span className={box}>
@@ -107,119 +107,65 @@ export default function CheckoutSheet(props: Props) {
   ];
 
   return (
-    <div dir={ar ? "rtl" : "ltr"} className="fixed inset-0 z-[120] flex items-end justify-center bg-foreground/40 sm:items-center">
+    <div dir={ar ? "rtl" : "ltr"} className="play-checkout-overlay">
       <div className="absolute inset-0" onClick={busy ? undefined : onClose} />
-      <motion.div
-        initial={{ y: 40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={IOS_SPRING}
-        className="relative w-full max-w-[440px] overflow-hidden rounded-t-[24px] bg-background text-foreground shadow-2xl sm:rounded-[24px]"
-      >
+      <motion.div role="dialog" aria-modal="true" aria-label={t("Checkout", "الدفع")}
+        initial={{ y: 32, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={IOS_SPRING}
+        className="play-checkout">
         {list ? (
-          <div className="pb-[calc(env(safe-area-inset-bottom,0px)+16px)]">
-            <div className="flex items-center gap-3 px-5 pb-3 pt-5">
-              <button type="button" onClick={() => setList(false)} aria-label={t("Back", "رجوع")} className="rounded-full p-1.5 hover:bg-muted">
-                <ArrowRight className="h-5 w-5 ltr:rotate-180" />
-              </button>
-              <h2 className="text-lg font-semibold">{t("Payment methods", "طرق الدفع")}</h2>
+          <div className="pb-6">
+            <div className="play-checkout-heading">
+              <Button variant="ghost" className="play-back" onClick={() => setList(false)} aria-label={t("Back", "رجوع")}><ArrowRight className="h-5 w-5 ltr:rotate-180" /></Button>
+              <h2>{t("Payment methods", "طرق الدفع")}</h2>
             </div>
-            <ul className="divide-y divide-border/60">
+            <ul>
               {options.map((m) => (
                 <li key={m.kind === "saved" ? m.id : m.kind}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onSelect(m);
-                      setList(false);
-                    }}
-                    className="flex w-full items-center gap-4 px-5 py-4 text-start hover:bg-muted/50"
-                  >
+                  <Button variant="ghost" className="play-method-row" onClick={() => { onSelect(m); setList(false); }}>
                     <MethodIcon m={m} />
-                    <span className="flex min-w-0 flex-1 flex-col">
-                      <span className="truncate text-[15.5px] font-medium" dir="ltr">{label(m)}</span>
-                      {m.kind === "saved" && (
-                        <span className="text-[12.5px] text-muted-foreground">
-                          {t("Saved · used for auto-renew", "محفوظة · للتجديد التلقائي")}
-                        </span>
-                      )}
-                    </span>
-                    {same(m, selected) && (
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                        <Check className="h-4 w-4" strokeWidth={3} />
-                      </span>
-                    )}
-                  </button>
+                    <span className="play-method-label" dir="auto">{label(m)}</span>
+                    {same(m, selected) && <span className="play-method-check"><Check className="h-4 w-4" strokeWidth={3} /></span>}
+                  </Button>
                 </li>
               ))}
             </ul>
-            <div className="mt-2 border-t border-border/60 px-5 pt-4">
-              <p className="mb-2 text-[13px] text-muted-foreground">{t("Add a payment method", "إضافة طريقة دفع")}</p>
-              <button
-                type="button"
-                onClick={() => {
-                  onSelect({ kind: "new_card" });
-                  setList(false);
-                  onBuy();
-                }}
-                className="flex w-full items-center gap-4 rounded-xl py-3 text-start hover:bg-muted/50"
-              >
-                <CreditCard className="h-6 w-6" strokeWidth={1.7} />
-                <span className="flex-1 text-[15.5px] font-medium">{t("Add a card", "إضافة بطاقة")}</span>
-                <span className="flex items-center gap-1">
-                  <BrandMark brand="mastercard" />
-                  <BrandMark brand="visa" />
-                </span>
-              </button>
+            <div className="play-checkout-add">
+              <p>{t("Add a payment method to your account", "إضافة طريقة دفع إلى حسابك")}</p>
+              <Button variant="ghost" className="play-method-row" onClick={() => { onSelect({ kind: "new_card" }); setList(false); onBuy(); }}>
+                <CreditCard className="h-6 w-6" />
+                <span className="play-method-label">{t("Add card", "إضافة بطاقة")}</span>
+                <span className="flex items-center gap-2"><BrandMark brand="mastercard" /><BrandMark brand="visa" /></span>
+              </Button>
             </div>
           </div>
         ) : (
-          <div className="pb-[calc(env(safe-area-inset-bottom,0px)+18px)]">
-            <div className="flex items-center justify-between border-b border-border/60 px-5 py-3.5">
-              <span className="text-[15px] font-semibold">Megsy AI</span>
-              <button type="button" onClick={onClose} disabled={busy} className="text-[13px] text-muted-foreground hover:text-foreground">
-                {t("Cancel", "إلغاء")}
-              </button>
+          <>
+            <div className="play-checkout-brand flex items-center justify-between">
+              <span>Megsy AI</span>
+              <Button variant="ghost" className="play-back" onClick={onClose} disabled={busy} aria-label={t("Close", "إغلاق")}><X className="h-4 w-4" /></Button>
             </div>
-            <div className="flex items-start gap-4 border-b border-border/60 px-5 py-5">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-lg font-bold text-primary-foreground">M</span>
+            <div className="play-checkout-product">
+              <span className="play-product-icon" aria-hidden="true">M</span>
               <div className="min-w-0 flex-1">
-                <p className="text-[17px] font-semibold leading-snug">{plan?.name ?? "Megsy"}</p>
-                <p className="mt-0.5 text-[13px] text-muted-foreground">
-                  {interval === "yearly" ? t("Yearly · renews automatically", "سنوي · يتجدد تلقائيًا") : t("Monthly · renews automatically", "شهري · يتجدد تلقائيًا")}
-                </p>
+                <h2>Megsy AI · {plan?.name ?? "Megsy"}</h2>
+                <p>{interval === "yearly" ? t("Yearly subscription", "اشتراك سنوي") : t("Monthly subscription", "اشتراك شهري")}</p>
               </div>
-              {price && <span className="text-[16px] font-semibold" dir="ltr">${price.price}</span>}
+              {price && <span className="play-checkout-price" dir="ltr">${price.price}</span>}
             </div>
-
-            <button
-              type="button"
-              onClick={() => setList(true)}
-              disabled={busy}
-              className="flex w-full items-center gap-4 border-b border-border/60 bg-muted/40 px-5 py-4 text-start hover:bg-muted/60"
-            >
+            <Button variant="ghost" className="play-method-row play-method-selected" onClick={() => setList(true)} disabled={busy}>
               <MethodIcon m={selected} />
-              <span className="min-w-0 flex-1 truncate text-[15.5px] font-medium" dir="ltr">{label(selected)}</span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-background">
-                <ChevronLeft className="h-4 w-4 ltr:rotate-180" />
-              </span>
-            </button>
-
-            <div className="px-5 pt-4">
+              <span className="play-method-label" dir="auto">{label(selected)}</span>
+              <span className="play-method-arrow"><ChevronLeft className="h-4 w-4 ltr:rotate-180" /></span>
+            </Button>
+            <div className="play-checkout-footer">
               {children}
-              {note && <p role="status" className="mb-3 text-[13px] leading-relaxed text-destructive">{note}</p>}
-              {selected.kind !== "apple_pay" && (
-                <Button type="button" onClick={onBuy} disabled={busy} className="h-12 w-full rounded-full text-[15px] font-semibold">
-                  {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : selected.kind === "new_card" ? t("Continue", "متابعة") : t("Subscribe", "اشترك الآن")}
-                </Button>
-              )}
-              <p className="mt-3 text-center text-[11.5px] leading-relaxed text-muted-foreground">
-                {t(
-                  "Card details stay with the payment provider; Megsy only keeps the last 4 digits. Cancel auto-renew anytime.",
-                  "بيانات البطاقة محفوظة عند بوابة الدفع، وMegsy بيحتفظ بآخر 4 أرقام بس. تقدر توقف التجديد في أي وقت.",
-                )}
-              </p>
+              {note && <p role="status" className="text-destructive">{note}</p>}
+              <p>{t("Continue to confirm your subscription securely with the payment provider.", "تابع لتأكيد اشتراكك بأمان من خلال بوابة الدفع.")}</p>
+              {selected.kind !== "apple_pay" && <Button variant="ghost" className="play-buy" onClick={onBuy} disabled={busy}>
+                {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : selected.kind === "new_card" ? t("Continue", "متابعة") : t("Tap to subscribe", "انقر للاشتراك")}
+              </Button>}
             </div>
-          </div>
+          </>
         )}
       </motion.div>
     </div>
