@@ -2588,7 +2588,8 @@ const ChatPage = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
-            className="fixed inset-0 z-[59] bg-black/45 md:hidden"
+            className="fixed inset-0 z-[59] md:hidden"
+            style={{ background: "hsl(0 0% 0% / 0.45)" }}
             onClick={() => setPlusMenuOpen(false)}
           />
           <motion.div
@@ -2598,8 +2599,8 @@ const ChatPage = () => {
             transition={{ type: "spring", stiffness: 520, damping: 40 }}
             data-plus-menu
             onClick={(e) => e.stopPropagation()}
-            className="fixed inset-x-4 z-[60] rounded-[32px] bg-background p-4 md:hidden"
-            style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)" }}
+            className="fixed inset-x-4 z-[60] rounded-[34px] bg-background p-4 md:hidden"
+            style={{ boxShadow: "none", border: 0, bottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)" }}
           >
             {renderPlusContent()}
           </motion.div>
