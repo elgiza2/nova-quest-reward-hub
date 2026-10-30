@@ -1,6 +1,6 @@
 /* Payment surfaces: Google Play purchase-sheet look, isolated from the animated chat theme. */
-:root{--gp-bg:oklch(1 0 0);--gp-ink:oklch(.21 .005 260);--gp-muted:oklch(.47 .01 260);--gp-line:oklch(.89 .004 260);--gp-blue:oklch(.5 .19 262);--gp-on-blue:oklch(1 0 0);--gp-sel:oklch(.91 .055 235);--gp-chev:oklch(.95 .01 250);--gp-scrim:oklch(0 0 0 / .42);--gp-field:oklch(1 0 0)}
-html.dark,html[data-theme=dark]{--gp-bg:oklch(.2 .006 260);--gp-ink:oklch(.94 0 0);--gp-muted:oklch(.74 .01 260);--gp-line:oklch(.35 .008 260);--gp-blue:oklch(.78 .11 250);--gp-on-blue:oklch(.22 .04 260);--gp-sel:oklch(.33 .06 250);--gp-chev:oklch(.27 .01 260);--gp-field:oklch(.2 .006 260)}
+:root{--gp-bg:oklch(1 0 0);--gp-ink:oklch(.15 0 0);--gp-muted:oklch(.5 0 0);--gp-line:oklch(.92 0 0);--gp-blue:oklch(.15 0 0);--gp-on-blue:oklch(1 0 0);--gp-sel:oklch(.965 0 0);--gp-chev:oklch(1 0 0);--gp-scrim:oklch(0 0 0 / .22);--gp-field:oklch(1 0 0)}
+html.dark,html[data-theme=dark]{--gp-bg:oklch(.17 0 0);--gp-ink:oklch(.97 0 0);--gp-muted:oklch(.68 0 0);--gp-line:oklch(.28 0 0);--gp-blue:oklch(.97 0 0);--gp-on-blue:oklch(.15 0 0);--gp-sel:oklch(.23 0 0);--gp-chev:oklch(.3 0 0);--gp-scrim:oklch(0 0 0 / .4);--gp-field:oklch(.17 0 0)}
 
 /* Overlay + bottom sheet */
 .gp-overlay,.play-checkout-overlay{position:fixed;inset:0;z-index:120;display:flex;align-items:flex-end;justify-content:center}
@@ -82,3 +82,37 @@ html body .gp-sheet h2,html body .play-checkout h2{font-weight:400!important}
 @media(min-width:640px){html body .gp-sheet,html body .play-checkout{border-radius:12px}}
 html body div.gp-overlay>div.gp-sheet[role=dialog][aria-modal],html body div.play-checkout-overlay>section.play-checkout[role=dialog]{background:var(--gp-bg)!important;background-color:var(--gp-bg)!important}
 html body .gp-sheet h2{-webkit-text-stroke:0!important;font-synthesis:none}
+
+/* Floating pop-up: the page behind stays visible; black-and-white surface. */
+.gp-overlay,.play-checkout-overlay{padding:10px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
+html body div.gp-overlay>div.gp-sheet,html body div.play-checkout-overlay>section.play-checkout{border-radius:26px!important;border:1px solid var(--gp-line)!important;box-shadow:0 24px 60px -12px oklch(0 0 0 / .28),0 2px 8px oklch(0 0 0 / .08)!important;max-height:calc(100dvh - 20px)}
+.gp-sheet[data-full]{height:auto;max-height:min(640px,calc(100dvh - 72px))}
+@media(min-width:640px){.gp-sheet[data-full]{height:auto}}
+.gp-brand{font-size:15px;font-weight:600;color:var(--gp-ink);padding:16px 22px 14px}
+.gp-product{padding:22px 22px 24px}
+.gp-app-icon{border-radius:12px;box-shadow:none}
+.gp-price{font-weight:600}
+html body .gp-sheet button.gp-selected{margin:14px 14px 0;width:calc(100% - 28px);border-radius:18px!important;border:1px solid var(--gp-line)!important;min-height:76px;padding:14px 16px}
+.gp-info{color:var(--gp-muted)}
+.gp-chev{border:1px solid var(--gp-line)}
+.gp-hint{font-size:13.5px;color:var(--gp-muted);margin-bottom:16px}.gp-hint a{color:var(--gp-ink);text-decoration:underline;text-underline-offset:2px}
+html body .gp-sheet button.gp-buy,html body .play-checkout button.play-buy{height:52px;font-weight:600}
+html body .gp-sheet button.gp-buy:hover{opacity:.9}
+.gp-ico,.gp-chip{width:44px;height:30px;border-radius:7px;border:1px solid var(--gp-line);background:oklch(1 0 0)}
+.gp-ico[data-kind=apple_pay],.gp-chip:has(.gp-logo--applepay){color:oklch(0 0 0)}
+.gp-logo{display:block}.gp-logo--googlepay{width:32px;height:15px}.gp-logo--applepay{width:30px;height:20px}
+.gp-logo--vodafone{width:19px;height:19px}.gp-logo--paypal,.gp-logo--klarna{width:16px;height:16px}
+.gp-ico .gp-logo--klarna,.gp-chip .gp-logo--klarna{color:oklch(0 0 0)}
+.gp-chip:has(.gp-logo--klarna){background:oklch(.86 .07 355)}
+.gp-accepted{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:16px}
+.gp-accepted .gp-chip{width:40px;height:26px}
+html body .gp-sheet button.gp-row{gap:18px;padding:12px 22px;min-height:66px}
+.gp-check{width:22px;height:22px}
+.gp-page-head{padding:16px 12px 14px}.gp-page-head h2{font-size:20px}
+.gp-divider{margin:6px 22px 14px}
+.gp-foot--page{padding-top:22px}
+html body .gp-sheet .checkout-input-wrap,html body .play-checkout .checkout-input-wrap{border-radius:14px;border-color:var(--gp-line);height:52px}
+html body .gp-sheet .checkout-input-wrap:focus-within,html body .play-checkout .checkout-input-wrap:focus-within{border-color:var(--gp-ink);box-shadow:0 0 0 3px oklch(.5 0 0 / .12)}
+html body .gp-sheet.gp-sheet .checkout-input-wrap>input{height:50px!important}
+html body .gp-sheet label.border{border-color:var(--gp-line)!important;border-radius:14px!important;height:52px}
+html.dark .gp-ico,html.dark .gp-chip{border-color:oklch(.35 0 0)}

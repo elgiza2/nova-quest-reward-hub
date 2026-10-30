@@ -1,5 +1,5 @@
 // @doc Dedicated checkout page — the payment flow lives on its own route, separate from /pricing.
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +9,8 @@ import type { PlanTier } from "@/data/pricingData";
 import { getZoneBrand } from "@/lib/zoneBrand";
 
 type CheckoutState = { tier?: PlanTier; interval?: "monthly" | "yearly" };
+
+const PricingPage = lazy(() => import("./PricingPage"));
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -47,6 +49,12 @@ const CheckoutPage = () => {
 
   return (
     <>
+      {/* The pricing page stays visible behind the floating payment box. */}
+      <div aria-hidden="true" inert className="pointer-events-none select-none">
+        <Suspense fallback={null}>
+          <PricingPage />
+        </Suspense>
+      </div>
       <SEOHead
         title={`Checkout — ${BRAND} AI`}
         description="Complete your subscription payment."

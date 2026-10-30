@@ -53,11 +53,23 @@ export function brandOf(masked: string | null | undefined): "visa" | "mastercard
   return "card";
 }
 
-function Simple({ slug }: { slug: BrandSlug }) {
+/** Wordmark logos are wide, so each brand gets a cropped viewBox to fill its chip. */
+const CROP: Partial<Record<BrandSlug, string>> = { googlepay: "0 6.6 24 10.8", applepay: "0 4.2 24 15.6", paypal: "0 0 24 24", klarna: "0 0 24 24" };
+
+function Simple({ slug, mono }: { slug: BrandSlug; mono?: boolean }) {
   const b = BRAND_MARKS[slug];
   return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6" role="img" aria-label={b.title}>
-      <path d={b.path} fill={`#${b.hex}`} />
+    <svg viewBox={CROP[slug] ?? "0 0 24 24"} className={`gp-logo gp-logo--${slug}`} role="img" aria-label={b.title}>
+      <path d={b.path} fill={mono ? "currentColor" : `#${b.hex}`} />
+    </svg>
+  );
+}
+
+function VodafoneMark() {
+  return (
+    <svg viewBox="0 0 24 24" className="gp-logo gp-logo--vodafone" role="img" aria-label="Vodafone Cash">
+      <circle cx="12" cy="12" r="12" fill="#E60000" />
+      <path fill="#fff" d="M12.7 5.3c2.2-.6 4.2.1 4.9.6-1.8.1-3.4 1.4-3.4 3.5 1.9.5 3.3 2 3.3 4.1 0 2.7-2.3 4.9-5.2 4.9-3.3 0-5.7-2.7-5.7-6 0-3.6 2.5-6.4 6.1-7.1z" />
     </svg>
   );
 }
@@ -65,11 +77,25 @@ function Simple({ slug }: { slug: BrandSlug }) {
 function MethodIcon({ m }: { m: SheetMethod }) {
   let inner: React.ReactNode = <CreditCard className="h-4 w-4" strokeWidth={1.8} />;
   if (m.kind === "saved" && m.brand !== "card") inner = <BrandMark brand={m.brand} />;
-  else if (m.kind === "vodafone") inner = <Smartphone className="gp-wallet-ico h-4 w-4" strokeWidth={2} />;
-  else if (m.kind === "global" && m.id === "apple_pay") inner = <Simple slug="applepay" />;
+  else if (m.kind === "vodafone") inner = <VodafoneMark />;
+  else if (m.kind === "global" && m.id === "apple_pay") inner = <Simple slug="applepay" mono />;
   else if (m.kind === "global" && m.id === "google_pay") inner = <Simple slug="googlepay" />;
   else if (m.kind === "global") inner = <Globe2 className="h-4 w-4" strokeWidth={1.8} />;
-  return <span className="gp-ico">{inner}</span>;
+  return <span className="gp-ico" data-kind={m.kind === "global" ? m.id : m.kind}>{inner}</span>;
+}
+
+/** Row of accepted-method logos shown under the buy button. */
+function AcceptedStrip({ vodafone, apple }: { vodafone: boolean; apple: boolean }) {
+  return (
+    <div className="gp-accepted" dir="ltr" aria-label="Accepted payment methods">
+      <span className="gp-chip"><BrandMark brand="visa" /></span>
+      <span className="gp-chip"><BrandMark brand="mastercard" /></span>
+      {vodafone && <span className="gp-chip"><VodafoneMark /></span>}
+      {apple && <span className="gp-chip"><Simple slug="applepay" mono /></span>}
+      <span className="gp-chip"><Simple slug="googlepay" /></span>
+      <span className="gp-chip"><Simple slug="paypal" /></span>
+    </div>
+  );
 }
 
 type View = "main" | "list" | "add";
@@ -146,7 +172,7 @@ export default function CheckoutSheet(props: Props) {
               {price && <span className="gp-price" dir="ltr">${price.price}</span>}
             </div>
             <Button variant="ghost" className="gp-selected" onClick={() => setView("list")} disabled={busy}>
-              {selected.kind === "new_card" ? <span className="gp-ico"><CreditCard className="h-4 w-4" strokeWidth={1.8} /></span> : <MethodIcon m={selected} />}
+              <MethodIcon m={selected} />
               <span className="gp-label" dir="auto">
                 {label(selected)}
                 <small>{selected.kind === "new_card" ? t("Tap to choose how to pay", "اختار طريقة الدفع") : interval === "yearly" ? t("Renews every year · cancel anytime", "يتجدد كل سنة · تقدر تلغي في أي وقت") : t("Renews every month · cancel anytime", "يتجدد كل شهر · تقدر تلغي في أي وقت")}</small>
@@ -164,6 +190,7 @@ export default function CheckoutSheet(props: Props) {
               <Button variant="ghost" className="gp-buy" onClick={() => (selected.kind === "new_card" ? setView("add") : onBuy())} disabled={busy}>
                 {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : buyLabel}
               </Button>
+              <AcceptedStrip vodafone={showVodafone} apple={showApplePay} />
             </div>
           </>
         )}
@@ -185,6 +212,9 @@ export default function CheckoutSheet(props: Props) {
                   <Button variant="ghost" className="gp-row" onClick={() => { onSelect(m); setView("main"); }}>
                     <MethodIcon m={m} />
                     <span className="gp-label" dir="auto">{label(m)}{sub(m) && <small>{sub(m)}</small>}</span>
+                    {m.kind === "global" && m.id === "more" && !same(m, selected) && (
+                      <span className="gp-brands" dir="ltr"><span className="gp-chip"><Simple slug="paypal" /></span><span className="gp-chip"><Simple slug="klarna" mono /></span></span>
+                    )}
                     {same(m, selected) && <span className="gp-check"><Check className="h-3.5 w-3.5" strokeWidth={3} /></span>}
                   </Button>
                 </li>
