@@ -13,7 +13,8 @@ import { BrandMark } from "./CardPreview";
 import { BRAND_MARKS, type BrandSlug } from "@/lib/payments/brandMarks";
 import { getDisplayPrice, getPlan, type PlanTier } from "@/data/pricingData";
 import { useUserLang } from "@/lib/authI18n";
-import MegsyStar from "@/components/branding/MegsyStar";
+import { megsyIcon } from "@/hooks/useBrandLogo";
+import { useLocalPrices } from "@/lib/payments/localPrice";
 import { localMethodsFor, type LocalMethod, type LocalMethodId } from "@/lib/payments/countryMethods";
 
 export type GlobalMethodId = LocalMethodId;
@@ -117,7 +118,8 @@ export default function CheckoutSheet(props: Props) {
   const [view, setView] = useState<View>("main");
   const plan = getPlan(tier);
   const price = plan ? getDisplayPrice(plan, interval === "yearly") : null;
-  const locals = localMethodsFor(country).filter((l) => !l.appleOnly || showApplePay);
+  const locals = localMethodsFor(country, price?.price ?? 0).filter((l) => !l.appleOnly || showApplePay);
+  const [local] = useLocalPrices([{ usd: price?.price ?? 0, slot: interval === "yearly" ? "yearly" : "monthly_intro" }], ar);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && (view === "main" ? onClose() : setView("main"));
@@ -167,18 +169,23 @@ export default function CheckoutSheet(props: Props) {
         {view === "main" && (
           <>
             <div className="gp-product">
-              <span className="gp-app-icon" aria-hidden="true"><MegsyStar className="h-9 w-9" /></span>
+              <span className="gp-app-icon" aria-hidden="true"><img src={megsyIcon} alt="" width={40} height={40} /></span>
               <div className="gp-product-name">
                 <h2>{plan?.name ?? "Megsy"}</h2>
                 <p>{interval === "yearly" ? t("Yearly subscription", "اشتراك سنوي") : t("Monthly subscription", "اشتراك شهري")}</p>
               </div>
-              {price && <span className="gp-price" dir="ltr">${price.price}</span>}
+              {price && (
+                <span className="gp-price" dir="ltr">
+                  {local ? `${local.approx ? "≈ " : ""}${local.text}` : `$${price.price}`}
+                  {local && <small>${price.price}</small>}
+                </span>
+              )}
             </div>
-            <Button variant="ghost" className="gp-selected" onClick={() => setView("list")} disabled={busy}>
+            <Button variant="ghost" className="gp-selected gp-selected--compact" onClick={() => setView("list")} disabled={busy}>
               <MethodIcon m={selected} locals={locals} />
               <span className="gp-label" dir="auto">
                 {label(selected)}
-                <small>{selected.kind === "new_card" ? t("Tap to choose how to pay", "اختار طريقة الدفع") : interval === "yearly" ? t("Renews every year · cancel anytime", "يتجدد كل سنة · تقدر تلغي في أي وقت") : t("Renews every month · cancel anytime", "يتجدد كل شهر · تقدر تلغي في أي وقت")}</small>
+                <small className="gp-renew">{selected.kind === "new_card" ? t("Tap to choose how to pay", "اختار طريقة الدفع") : interval === "yearly" ? t("Renews every year · cancel anytime", "يتجدد كل سنة · تقدر تلغي في أي وقت") : t("Renews every month · cancel anytime", "يتجدد كل شهر · تقدر تلغي في أي وقت")}</small>
               </span>
               <span className="gp-chev"><ChevronLeft className="h-4 w-4 ltr:rotate-180" /></span>
             </Button>
