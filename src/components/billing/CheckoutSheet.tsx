@@ -213,7 +213,7 @@ export default function CheckoutSheet(props: Props) {
                     <MethodIcon m={m} />
                     <span className="gp-label" dir="auto">{label(m)}{sub(m) && <small>{sub(m)}</small>}</span>
                     {m.kind === "global" && m.id === "more" && !same(m, selected) && (
-                      <span className="gp-brands" dir="ltr"><span className="gp-chip"><Simple slug="paypal" /></span><span className="gp-chip"><Simple slug="klarna" /></span></span>
+                      <span className="gp-brands" dir="ltr"><span className="gp-chip"><Simple slug="paypal" /></span><span className="gp-chip"><Simple slug="klarna" mono /></span></span>
                     )}
                     {same(m, selected) && <span className="gp-check"><Check className="h-3.5 w-3.5" strokeWidth={3} /></span>}
                   </Button>
