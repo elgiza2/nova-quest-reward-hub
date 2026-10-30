@@ -14,6 +14,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createHash, timingSafeEqual } from "crypto";
 import { validateAgentSkyKey } from "@/lib/agentsky/agentsky.server";
+import { normalizeProvider, providerFromReply, type ProviderId } from "@/lib/telegramKeyProviders";
 
 export function telegramWebhookSecret(token: string) {
   return createHash("sha256").update(`megsy-keys:${token}`).digest("base64url");
@@ -25,15 +26,14 @@ function safeEqual(a: string, b: string) {
   return x.length === y.length && timingSafeEqual(x, y);
 }
 
-const mask = (k: string) => (k.length > 12 ? `${k.slice(0, 6)}…${k.slice(-4)}` : "••••");
-
-type ProviderId = "cerebras" | "agentsky" | "browser-use" | "deapi";
+const mask = (_k: string) => "مفتاح محفوظ";
 
 const PROVIDERS: Record<ProviderId, { label: string; icon: string }> = {
   cerebras: { label: "Cerebras", icon: "🧠" },
   agentsky: { label: "AgentSky", icon: "🤖" },
   "browser-use": { label: "Browser Use", icon: "🌐" },
   deapi: { label: "deAPI", icon: "🎨" },
+  plusai: { label: "Plus AI", icon: "📊" },
 };
 
 // Webhook instances are stateless, so the pending provider lives in memory AND
@@ -41,27 +41,18 @@ const PROVIDERS: Record<ProviderId, { label: string; icon: string }> = {
 // works even if the instance restarted between the tap and the key message.
 const pendingProvider = new Map<number, ProviderId>();
 
-function normalizeProvider(raw: string): ProviderId | null {
-  const v = raw.trim().toLowerCase().replace(/_/g, "-");
-  if (v === "cerebras" || v === "c") return "cerebras";
-  if (v === "agentsky" || v === "agent" || v === "a") return "agentsky";
-  if (v === "deapi" || v === "d") return "deapi";
-  if (v === "browser-use" || v === "browseruse" || v === "browser" || v === "b")
-    return "browser-use";
-  return null;
-}
-
 const HELP = [
   "🔑 <b>مفاتيح المزودين</b>",
   "",
   "اختار المزود من الأزرار، وبعدين ابعت المفتاح كرسالة عادية.",
-  "أو ابعت مباشرة: <code>/add_cerebras KEY</code> أو <code>/add_agentsky KEY</code> أو <code>/add_browseruse KEY</code> أو <code>/add_deapi KEY</code>",
+  "رد على رسالة اختيار المزود، أو ابعت مباشرة: <code>/add_cerebras KEY</code> أو <code>/add_agentsky KEY</code> أو <code>/add_browseruse KEY</code> أو <code>/add_deapi KEY</code> أو <code>/add_plusai KEY</code>",
   "",
   "/keys — عرض كل المزودين",
   "/keys_cerebras — مفاتيح Cerebras",
   "/keys_agentsky — مفاتيح AgentSky",
   "/keys_browseruse — مفاتيح Browser Use",
   "/keys_deapi — مفاتيح deAPI",
+  "/keys_plusai — مفاتيح Plus AI",
   "/del_cerebras رقم — حذف مفتاح",
   "/on_cerebras رقم — تفعيل مفتاح",
   "(نفس الصيغة لـ agentsky و browseruse و deapi)",
@@ -78,6 +69,7 @@ function providerMenu() {
         { text: "🌐 Browser Use", callback_data: "keys:provider:browser-use" },
         { text: "🎨 deAPI", callback_data: "keys:provider:deapi" },
       ],
+      [{ text: "📊 Plus AI", callback_data: "keys:provider:plusai" }],
       [{ text: "📊 الإحصائيات", callback_data: "keys:stats" }],
     ],
   };
@@ -90,7 +82,7 @@ async function validateCerebrasKey(key: string): Promise<boolean> {
     });
     // 401/403 = bad key. Anything else (200, 404, 405…) means auth passed.
     if (res.status === 401 || res.status === 403) return false;
-    return res.ok || res.status === 404 || res.status === 405;
+    return res.ok;
   } catch {
     return false;
   }
@@ -103,7 +95,7 @@ async function validateBrowserUseKey(key: string): Promise<boolean> {
     });
     // Credit/auth rejections belong to the key → invalid for rotation.
     if ([401, 402, 403].includes(res.status)) return false;
-    return true;
+    return res.ok;
   } catch {
     return false;
   }
@@ -114,7 +106,7 @@ async function validateDeapiKey(key: string): Promise<boolean> {
     const res = await fetch("https://api.deapi.ai/api/v1/client/balance", {
       headers: { Authorization: `Bearer ${key}`, Accept: "application/json" },
     });
-    return res.status !== 401 && res.status !== 403;
+    return res.ok;
   } catch {
     return false;
   }
@@ -151,29 +143,38 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const token = process.env.TELEGRAM_KEYS_BOT_TOKEN;
-        if (!token) return new Response("not configured", { status: 500 });
+        const gatewayKey = process.env.TELEGRAM_API_KEY;
+        const gatewayAuth = process.env.LOVABLE_API_KEY;
+        const token = gatewayKey || process.env.TELEGRAM_KEYS_BOT_TOKEN;
+        if (!token || (gatewayKey && !gatewayAuth)) return new Response("not configured", { status: 500 });
         const header = request.headers.get("X-Telegram-Bot-Api-Secret-Token") ?? "";
         if (!safeEqual(header, telegramWebhookSecret(token)))
           return new Response("Unauthorized", { status: 401 });
 
         const update = await request.json().catch(() => null);
-        const send = (chatId: number, text: string, replyMarkup?: unknown) =>
-          fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        const telegramCall = async (method: string, body: unknown) => {
+          const response = await fetch(gatewayKey ? `https://connector-gateway.lovable.dev/telegram/${method}` : `https://api.telegram.org/bot${token}/${method}`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              chat_id: chatId,
-              text,
-              parse_mode: "HTML",
-              ...(replyMarkup ? { reply_markup: replyMarkup } : {}),
-            }),
+            headers: { "Content-Type": "application/json", ...(gatewayKey ? { Authorization: `Bearer ${gatewayAuth}`, "X-Connection-Api-Key": gatewayKey } : {}) },
+            body: JSON.stringify(body),
           });
-
+          const result = await response.json().catch(() => null);
+          if (!response.ok || result?.ok !== true) {
+            // Never include provider text: it may echo request credentials.
+            throw new Error(`Telegram ${method} failed (${response.status})`);
+          }
+          return result;
+        };
+        const send = (chatId: number, text: string, replyMarkup?: unknown) =>
+          telegramCall("sendMessage", {
+              chat_id: chatId, text, parse_mode: "HTML",
+              ...(replyMarkup ? { reply_markup: replyMarkup } : {}),
+          });
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const db = supabaseAdmin as any;
 
-        const { data: admins } = await db.from("telegram_key_admins").select("telegram_user_id");
+        const { data: admins, error: adminError } = await db.from("telegram_key_admins").select("telegram_user_id");
+        if (adminError) return new Response("Admin lookup unavailable", { status: 503 });
         const isAdminUser = (id: number) =>
           (admins ?? []).some((a: any) => Number(a.telegram_user_id) === Number(id));
 
@@ -183,11 +184,7 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
           const fromId = Number(callback?.from?.id);
           const chatId = Number(callback?.message?.chat?.id);
           const data = String(callback?.data ?? "");
-          await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ callback_query_id: callback.id }),
-          }).catch(() => undefined);
+          await telegramCall("answerCallbackQuery", { callback_query_id: callback.id }).catch(() => undefined);
           if (!chatId || !fromId || !isAdminUser(fromId)) return Response.json({ ok: true });
 
           if (data === "keys:stats") {
@@ -209,6 +206,7 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
                 `🤖 AgentSky: ${aActive} نشط / ${aOff} متوقف`,
                 `🌐 Browser Use: ${counts["browser-use"]?.active ?? 0} نشط / ${counts["browser-use"]?.banned ?? 0} محظور`,
                 `🎨 deAPI: ${counts["deapi"]?.active ?? 0} نشط / ${counts["deapi"]?.banned ?? 0} محظور`,
+                `📊 Plus AI: ${counts["plusai"]?.active ?? 0} محفوظ`,
                 "",
                 "التدوير تلقائي: الأقل استخدامًا أولًا، وحظر بعد 3 فشل متتالي مع إحياء تلقائي.",
               ].join("\n"),
@@ -225,7 +223,8 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
             const p = PROVIDERS[picked];
             await send(
               chatId,
-              `${p.icon} <b>${p.label}</b>\n\nابعت المفتاح كرسالة عادية، أو استخدم:\n<code>/add_${picked.replace("-", "")} KEY</code>`,
+              `KEY_PROVIDER:${picked}\n${p.icon} <b>${p.label}</b>\n\nرد على الرسالة دي بالمفتاح، أو استخدم:\n<code>/add_${picked.replace("-", "")} KEY</code>`,
+              { force_reply: true, selective: true },
             );
           }
           return Response.json({ ok: true });
@@ -240,8 +239,8 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
 
         let isAdmin = isAdminUser(fromId);
         if (!isAdmin && (admins ?? []).length === 0 && text.startsWith("/start")) {
-          await db.from("telegram_key_admins").insert({ telegram_user_id: fromId });
-          isAdmin = true;
+          const { error } = await db.from("telegram_key_admins").insert({ telegram_user_id: fromId });
+          isAdmin = !error;
         }
         if (!isAdmin) {
           await reply("غير مسموح.");
@@ -269,7 +268,7 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
                 `${icon} <b>${label}</b>`,
                 ...rows.map(
                   (r, i) =>
-                    `${i + 1}. <code>••••${r.key_hint ?? "••••"}</code> ${r.status === "banned" ? "⛔" : "🟢"}${r.last_error ? ` — ${String(r.last_error).slice(0, 60)}` : ""}`,
+                    `${i + 1}. <code>مفتاح محفوظ</code> ${r.status === "banned" ? "⛔" : "🟢"}`,
                 ),
               ].join("\n")
             : `${icon} <b>${label}</b>\nمفيش مفاتيح لسه.`;
@@ -295,7 +294,7 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
           }
           const vaultProvider = provider;
           const ok =
-            provider === "cerebras"
+            provider === "plusai" ? true : provider === "cerebras"
               ? await validateCerebrasKey(key)
               : provider === "deapi"
                 ? await validateDeapiKey(key)
@@ -319,8 +318,8 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
             provider: vaultProvider,
             key_cipher: enc.cipher,
             key_iv: enc.iv,
-            key_hint: key.trim().slice(-4),
-            label: "telegram",
+
+            label: provider === "plusai" ? "telegram:unverified" : "telegram",
             status: "active",
             fail_count: 0,
             success_count: 0,
@@ -328,18 +327,21 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
           await reply(
             error
               ? "حصلت مشكلة في الحفظ."
-              : `اتضاف ${mask(key)} ✅\nهيدخل التدوير تلقائيًا (الأقل استخدامًا أولًا).`,
+              : provider === "plusai"
+                ? "اتحفظ مفتاح Plus AI مشفّر ✅ — لسه غير متحقق منه، وتشغيله في إنشاء العروض محتاج توصيل الخدمة."
+                : "اتحفظ المفتاح ✅\nهيدخل التدوير تلقائيًا (الأقل استخدامًا أولًا).",
           );
         };
 
         // ---- Commands ----
         if (text.startsWith("/start") || text.startsWith("/help")) {
+          pendingProvider.delete(fromId);
           await reply(HELP, providerMenu());
           return Response.json({ ok: true });
         }
 
         const addMatch = text.match(
-          /^\/add[_-]?(cerebras|agentsky|agent|browseruse|browser-use|browser|deapi)\s+(\S+)\s*$/i,
+          /^\/add[_-]?(cerebras|agentsky|agent|browseruse|browser-use|browser|deapi|plusai|plus-ai|plus_ai|plus)\s+(\S+)\s*$/i,
         );
         if (addMatch) {
           const provider = normalizeProvider(addMatch[1]);
@@ -351,26 +353,26 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
         }
 
         const selectMatch = text.match(
-          /^\/(cerebras|agentsky|agent|browseruse|browser-use|browser|deapi)\s*$/i,
+          /^\/(cerebras|agentsky|agent|browseruse|browser-use|browser|deapi|plusai|plus-ai|plus_ai|plus)\s*$/i,
         );
         if (selectMatch) {
           const provider = normalizeProvider(selectMatch[1]);
           if (provider) {
             pendingProvider.set(fromId, provider);
             const p = PROVIDERS[provider];
-            await reply(`${p.icon} <b>${p.label}</b>\n\nابعت المفتاح كرسالة عادية.`);
+            await reply(`KEY_PROVIDER:${provider}\n${p.icon} <b>${p.label}</b>\n\nرد على الرسالة دي بالمفتاح.`, { force_reply: true, selective: true });
             return Response.json({ ok: true });
           }
         }
 
-        if (/^\/keys\b/i.test(text)) {
+        if (/^\/keys(?=$|[\s_-])/i.test(text)) {
           const rest = text
-            .replace(/^\/keys\b/i, "")
+            .replace(/^\/keys(?=$|[\s_-])/i, "")
             .trim()
             .replace(/_/g, "-")
             .replace(/^-+/, "");
           const only = rest ? normalizeProvider(rest) : null;
-          if (only === "cerebras" || only === "browser-use" || only === "deapi") {
+          if (only === "cerebras" || only === "browser-use" || only === "deapi" || only === "plusai") {
             const vaultProvider = only;
             await reply(
               formatVaultRows(
@@ -388,18 +390,19 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
                     "🤖 <b>AgentSky</b>",
                     ...rows.map(
                       (r, i) =>
-                        `${i + 1}. <code>${mask(r.key_value)}</code> ${r.active ? "🟢" : "🔴"}${r.last_error && !r.active ? ` — ${r.last_error.slice(0, 60)}` : ""}`,
+                        `${i + 1}. <code>${mask(r.key_value)}</code> ${r.active ? "🟢" : "🔴"}`,
                     ),
                   ].join("\n")
                 : "🤖 <b>AgentSky</b>\nمفيش مفاتيح لسه.",
               providerMenu(),
             );
           } else if (/^\/keys$/i.test(text)) {
-            const [c, b, a, d] = await Promise.all([
+            const [c, b, a, d, plus] = await Promise.all([
               listVault("cerebras"),
               listVault("browser-use"),
               listAgentsky(),
               listVault("deapi"),
+              listVault("plusai"),
             ]);
             await reply(
               [
@@ -408,6 +411,7 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
                 formatVaultRows(b, "🌐", "Browser Use"),
                 "",
                 formatVaultRows(d, "🎨", "deAPI"),
+                formatVaultRows(plus, "📊", "Plus AI"),
                 "",
                 a.length
                   ? [
@@ -428,7 +432,7 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
         }
 
         const modMatch = text.match(
-          /^\/(del|on)[_-]?(cerebras|agentsky|agent|browseruse|browser-use|browser|deapi)?\s+(\d+)\s*$/i,
+          /^\/(del|on)[_-]?(cerebras|agentsky|agent|browseruse|browser-use|browser|deapi|plusai|plus-ai|plus_ai|plus)?\s+(\d+)\s*$/i,
         );
         if (modMatch) {
           const cmd = modMatch[1].toLowerCase();
@@ -453,13 +457,13 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
             if (!row) await reply("الرقم ده مش موجود.");
             else if (cmd === "del") {
               await db.from("service_keys").delete().eq("id", row.id);
-              await reply(`اتحذف ••••${row.key_hint ?? "••••"} ✅`);
+              await reply(`اتحذف مفتاح محفوظ ✅`);
             } else {
               await db
                 .from("service_keys")
                 .update({ status: "active", fail_count: 0, banned_at: null, last_error: null })
                 .eq("id", row.id);
-              await reply(`اتفعل ••••${row.key_hint ?? "••••"} ✅`);
+              await reply(`اتفعل مفتاح محفوظ ✅`);
             }
           }
           return Response.json({ ok: true });
@@ -485,7 +489,11 @@ export const Route = createFileRoute("/api/public/telegram-keys")({
 
         // Plain key message → pending provider (button-selected) or AgentSky legacy.
         if (/^\S{20,300}$/.test(text)) {
-          const provider = pendingProvider.get(fromId) ?? "agentsky";
+          const provider = providerFromReply(String(msg?.reply_to_message?.text ?? "")) ?? pendingProvider.get(fromId);
+          if (!provider) {
+            await reply("اختار المزود ورد على رسالة الاختيار، أو استخدم أمر /add باسم المزود.", providerMenu());
+            return Response.json({ ok: true });
+          }
           pendingProvider.delete(fromId);
           await addKey(provider, text);
           return Response.json({ ok: true });

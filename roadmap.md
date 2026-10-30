@@ -1,5 +1,9 @@
 # Roadmap
 
+## Telegram key bot repair
+- [x] Repair gateway transport, reply-carried provider selection and provider commands; include encrypted Plus AI storage explicitly marked unverified. Nine routing tests passed; local unauthorized requests return 401 and registered-admin /keys handling returns 200.
+- [ ] Register the current project's webhook: blocked because its public hosted endpoint returns 500 "not configured" despite locally configured secrets. Old webhook left unchanged to avoid interrupting bot delivery; requires deployment with current secrets. Plus AI presentation consumer is absent, so storing a key does not activate generation.
+
 ## Current request — pricing and settings
 - [x] Cancel the latest settings redesign and restore the original settings appearance before monochrome changes; pricing and checkout remain unchanged.
 - [x] Remove secondary dollar amounts whenever pricing and checkout show a local currency; Egypt and India pricing verified in the signed-in mobile browser.

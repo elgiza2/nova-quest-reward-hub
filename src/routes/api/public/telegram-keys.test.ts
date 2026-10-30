@@ -1,15 +1,18 @@
 import { describe, expect, it } from "vitest";
-
-function normalizeProvider(raw: string): "cerebras" | "agentsky" | "browser-use" | null {
-  const v = raw.trim().toLowerCase().replace(/_/g, "-");
-  if (v === "cerebras" || v === "c") return "cerebras";
-  if (v === "agentsky" || v === "agent" || v === "a") return "agentsky";
-  if (v === "browser-use" || v === "browseruse" || v === "browser" || v === "b")
-    return "browser-use";
-  return null;
-}
+import { normalizeProvider, providerFromReply } from "@/lib/telegramKeyProviders";
 
 describe("telegram provider routing", () => {
+  it.each([
+    ["deapi", "deapi"], ["browseruse", "browser-use"],
+    ["agentsky", "agentsky"], ["cerebras", "cerebras"], ["Plus ai", "plusai"],
+  ])("routes %s to its own pool", (input, expected) => {
+    expect(normalizeProvider(input)).toBe(expected);
+  });
+  it("preserves selection in a reply across webhook restarts", () => {
+    expect(providerFromReply("KEY_PROVIDER:browser-use\nBrowser Use")).toBe("browser-use");
+    expect(providerFromReply("KEY_PROVIDER:plusai\nPlus AI")).toBe("plusai");
+    expect(providerFromReply("unrelated message")).toBeNull();
+  });
   it("maps buttons and commands to the three chat providers", () => {
     expect(normalizeProvider("keys:provider:cerebras".slice("keys:provider:".length))).toBe(
       "cerebras",
