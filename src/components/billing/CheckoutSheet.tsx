@@ -172,7 +172,7 @@ export default function CheckoutSheet(props: Props) {
               {price && <span className="gp-price" dir="ltr">${price.price}</span>}
             </div>
             <Button variant="ghost" className="gp-selected" onClick={() => setView("list")} disabled={busy}>
-              {selected.kind === "new_card" ? <span className="gp-ico"><CreditCard className="h-4 w-4" strokeWidth={1.8} /></span> : <MethodIcon m={selected} />}
+              <MethodIcon m={selected} />
               <span className="gp-label" dir="auto">
                 {label(selected)}
                 <small>{selected.kind === "new_card" ? t("Tap to choose how to pay", "اختار طريقة الدفع") : interval === "yearly" ? t("Renews every year · cancel anytime", "يتجدد كل سنة · تقدر تلغي في أي وقت") : t("Renews every month · cancel anytime", "يتجدد كل شهر · تقدر تلغي في أي وقت")}</small>
@@ -190,6 +190,7 @@ export default function CheckoutSheet(props: Props) {
               <Button variant="ghost" className="gp-buy" onClick={() => (selected.kind === "new_card" ? setView("add") : onBuy())} disabled={busy}>
                 {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : buyLabel}
               </Button>
+              <AcceptedStrip vodafone={showVodafone} apple={showApplePay} />
             </div>
           </>
         )}
@@ -211,6 +212,9 @@ export default function CheckoutSheet(props: Props) {
                   <Button variant="ghost" className="gp-row" onClick={() => { onSelect(m); setView("main"); }}>
                     <MethodIcon m={m} />
                     <span className="gp-label" dir="auto">{label(m)}{sub(m) && <small>{sub(m)}</small>}</span>
+                    {m.kind === "global" && m.id === "more" && !same(m, selected) && (
+                      <span className="gp-brands" dir="ltr"><span className="gp-chip"><Simple slug="paypal" /></span><span className="gp-chip"><Simple slug="klarna" /></span></span>
+                    )}
                     {same(m, selected) && <span className="gp-check"><Check className="h-3.5 w-3.5" strokeWidth={3} /></span>}
                   </Button>
                 </li>
