@@ -31,3 +31,10 @@ html .play-checkout .play-card-networks svg{width:34px;height:22px}
 html .play-checkout h1,html .play-checkout h2,html .play-checkout p,html .play-checkout span{letter-spacing:0;text-shadow:none;-webkit-text-fill-color:currentColor}
 html .play-card-page .checkout-title{text-align:start;color:var(--checkout-ink);font-size:22px;font-weight:500;text-shadow:none;filter:none}
 html .play-card-page .checkout-input-wrap{box-shadow:none;backdrop-filter:none;background:var(--checkout-field);border-radius:4px}
+.play-checkout{--payment-red:oklch(.59 .24 27);--payment-yellow:oklch(.77 .17 70);--payment-orange:oklch(.7 .21 42);--payment-green:oklch(.64 .16 145);--payment-logo-surface:oklch(1 0 0)}
+html .play-card-page .checkout-stage{animation:none;margin-top:0;filter:none;opacity:1}
+html .play-card-page .checkout-title{color:var(--checkout-ink)!important;-webkit-text-fill-color:var(--checkout-ink)!important}
+html .play-card-page .checkout-allinone{margin-top:0;gap:0}
+html .play-card-page .checkout-field>span{color:var(--checkout-muted)!important;text-shadow:none;margin:0;font-weight:500}
+html .play-card-page .checkout-input-wrap input{color:var(--checkout-ink)!important;-webkit-text-fill-color:var(--checkout-ink)!important;padding:0}
+html .play-checkout .play-method-row .payment-red{fill:var(--payment-red)!important}html .play-checkout .payment-yellow{fill:var(--payment-yellow)!important}html .play-checkout .payment-orange{fill:var(--payment-orange)!important}
