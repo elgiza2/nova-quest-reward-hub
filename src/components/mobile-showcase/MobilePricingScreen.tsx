@@ -26,21 +26,21 @@ export default function MobilePricingScreen({ isYearly, onToggleYearly, onSubscr
   const { plan } = useUserPlan();
   const subscribed = plan === "pro" || plan === "max" || plan === "elite";
   const pro = getPlan("pro");
+  const [localMonthly, localYearly, localThen, localYearMo] = useLocalPrices(
+    [
+      { usd: pro ? getDisplayPrice(pro, false).price : 0, slot: "monthly_intro" },
+      { usd: pro ? getDisplayPrice(pro, true).price : 0, slot: "yearly" },
+      { usd: pro?.monthlyPrice ?? 0, slot: "monthly" },
+      { usd: pro ? getDisplayPrice(pro, true).price / 12 : 0 },
+    ],
+    isAr,
+  );
   if (!pro) return null;
   const monthly = getDisplayPrice(pro, false);
   const yearly = getDisplayPrice(pro, true);
   const benefits = isAr
     ? ["١٬٠٠٠ رصيد Megsy كل شهر", "بحث وتصفح وبرمجة مع وكيلك", "إنشاء الصور والفيديو داخل الشات"]
     : ["1,000 Megsy Credits every month", "Research, browse & code with your agent", "Create images & video in chat"];
-  const [localMonthly, localYearly, localThen, localYearMo] = useLocalPrices(
-    [
-      { usd: monthly.price, slot: "monthly_intro" },
-      { usd: yearly.price, slot: "yearly" },
-      { usd: pro.monthlyPrice, slot: "monthly" },
-      { usd: yearly.price / 12 },
-    ],
-    isAr,
-  );
   const shown = (l: LocalPrice | null, usd: string) => (l ? `${l.approx ? "≈ " : ""}${l.text}` : usd);
   const options = [
     { yearly: false, label: isAr ? "شهري" : "Monthly", price: shown(localMonthly, `$${monthly.price.toFixed(2)}`), usd: localMonthly ? `$${monthly.price.toFixed(2)}` : null, note: isAr ? "للشهر الأول" : "First month", detail: isAr ? `ثم ${shown(localThen, `$${pro.monthlyPrice}`)} / شهر` : `Then ${shown(localThen, `$${pro.monthlyPrice}`)} / month` },
