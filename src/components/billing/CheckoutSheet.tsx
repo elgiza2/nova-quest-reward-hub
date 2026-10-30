@@ -107,7 +107,7 @@ export default function CheckoutSheet(props: Props) {
             : m.id === "google_pay"
               ? "Google Pay"
               : t("More payment methods", "طرق دفع أخرى")
-          : t("Visa / Mastercard", "فيزا / ماستركارد");
+          : t("Add Visa / Mastercard", "أضف فيزا / ماستركارد");
 
   const sub = (m: SheetMethod) =>
     m.kind === "global" && m.id === "more"
@@ -194,7 +194,8 @@ export default function CheckoutSheet(props: Props) {
               {note && <p role="status" className="text-destructive">{note}</p>}
               <p>{t("Payments are encrypted. Only the last 4 digits of your card are shown. Cancel anytime.", "الدفع مشفّر. بنعرض آخر ٤ أرقام من بطاقتك بس. تقدر تلغي في أي وقت.")}</p>
               <Button variant="ghost" className="play-buy" onClick={onBuy} disabled={busy}>
-                {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : selected.kind === "new_card" ? t("Continue", "متابعة") : t("Subscribe", "اشترك")}
+                <span className="pay-points" aria-hidden="true">{Array.from({ length: 10 }, (_, i) => <i key={i} />)}</span>
+                <span className="relative z-[1] inline-flex items-center gap-2">{busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <>{t("Subscribe", "اشترك")}{price && <span dir="ltr">· ${price.price}</span>}</>}</span>
               </Button>
             </div>
           </>
