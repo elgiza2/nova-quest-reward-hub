@@ -118,3 +118,11 @@
 - [x] Dodo checkout narrowed to the picked method + local currency via the app's own checkout endpoint (falls back to the old path until the payment key is set on the host)
 - [x] Prices shown in the visitor's local currency (exact EGP for Egypt, approximate elsewhere) on pricing and checkout
 - [ ] Publish to megsyai.com: waiting on a fresh Vercel connection in this workspace, plus the Dodo key and service key in Vercel settings
+
+## Oct 30 — keys, + menu, thinking, savings
+- [x] + menu: floating white card with 3 square tiles over dimmed page (matches screenshot)
+- [x] Owner keys saved to pools (Cerebras exists, deAPI, Browser Use, AgentSky, Plus AI unverified)
+- [ ] Settings switches reported broken: work in tests (memory, capabilities, cloud browser) — need user's screenshot
+- [ ] Browserbase key: store and make available to agents
+- [ ] Unified thinking design (agent + fast chat)
+- [ ] Token savings ~90% with high quality
